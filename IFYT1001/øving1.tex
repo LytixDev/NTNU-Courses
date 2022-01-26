@@ -1,0 +1,38 @@
+\documentclass{article}
+
+\def\doubleunderline#1{\underline{\underline{#1}}}
+
+% \renewcommand\thesubsection{\alph{subsection}}
+
+\makeatletter
+\def\@seccntformat#1{%
+  \expandafter\ifx\csname c@#1\endcsname\c@section
+  Oppgave \thesection:
+  \else
+  \csname the#1\endcsname\quad
+  \fi}
+\makeatother
+
+\author{Nicolai Brand}
+\title{IFYT1001 - Øving 1}
+\begin{document}
+\maketitle
+
+% oppgave 1
+\section{}
+\hspace*{10mm}a)
+$$ 1,53 + 2,786 + 3,3 = 7,616 \approx \doubleunderline{7,6} $$
+\hspace*{10mm}b)
+$$ 400 nm = 400 * 10^{-9} m = \doubleunderline{400 * 10^{-7}cm} $$
+\hspace*{10mm}c)
+
+
+\hspace*{20mm}$ 6,0 * 10^2 $ MB
+\hspace*{10mm}$ 1 $ MB $ = 10^6 $ B
+\hspace*{10mm} et ord krever 9,0 B
+$$ \frac{6,0 * 10^2 * 10^6}{9} = \doubleunderline{\frac{2}{3} * 10^8 ord}$$
+
+\section{}
+
+
+\end{document}
