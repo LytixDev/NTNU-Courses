@@ -1,6 +1,5 @@
 package edu.ntnu.idatt2001.nicolahb.units;
 
-import java.util.Objects;
 
 /**
  * Unit abstract class.
@@ -39,12 +38,15 @@ abstract public class Unit {
     }
 
     /**
-     * Calculates the damage done on another unit.
-     * @param unit, enemy of any unit subclass.
+     * Calculates the damage done on another unit and subsequently modifies its health.
+     * Does apply the attack if the resistance is higher than the attack damage.
+     * @param opponent, enemy of any unit subclass.
      */
-    public void attack(Unit unit) {
-        unit.setHealth(unit.getHealth() - (this.getAttack() + this.getAttackBonus()) + (unit.getArmor()
-                + unit.getResistBonus()));
+    public void attack(Unit opponent) {
+        int attackDamage = this.getAttack() + this.getAttackBonus();
+        int resistance = opponent.getArmor() + opponent.getResistBonus();
+        if (attackDamage > resistance)
+            opponent.setHealth(opponent.getHealth() - attackDamage + resistance);
     }
 
     /**

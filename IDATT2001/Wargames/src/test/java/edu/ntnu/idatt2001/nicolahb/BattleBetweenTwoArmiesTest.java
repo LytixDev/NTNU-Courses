@@ -50,7 +50,35 @@ public class BattleBetweenTwoArmiesTest {
             else
                 assertFalse(armyOne.hasUnits());
         }
-
     }
 
+    @Nested
+    class BattleSimulation {
+        Army armyOne;
+        Army armyTwo;
+
+        /*
+         * Creates army instances and fills them with some test units
+         */
+        void prepareTest() {
+            armyOne = new Army("Army one");
+            armyTwo = new Army("Army two");
+
+            armyOne.addUnit(new InfantryUnit("Footman", 100));
+            armyTwo.addUnit(new InfantryUnit("Footman", 100));
+        }
+
+        @Test
+        public void battleCanOnlyRunOnce() {
+            prepareTest();
+            Battle battle = new Battle(armyOne, armyTwo);
+            battle.simulate();
+            try {
+                battle.simulate();
+                fail();
+            } catch (UnsupportedOperationException e) {
+                assertTrue(true);
+            }
+        }
+    }
 }

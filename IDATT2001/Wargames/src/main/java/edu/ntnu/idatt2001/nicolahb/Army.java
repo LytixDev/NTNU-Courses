@@ -53,8 +53,8 @@ public class Army {
      * @param units, ArrayList<Unit>: A list containing objects of type Unit.
      */
     public void addAllUnits(ArrayList<Unit> units) {
-        for (Unit unit : units)
-            addUnit(unit);
+        for (Unit toAdd : units)
+            addUnit(toAdd);
     }
     /**
      * Remove a specified unit.

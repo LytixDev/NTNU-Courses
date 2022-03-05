@@ -2,6 +2,7 @@ package edu.ntnu.idatt2001.nicolahb;
 
 import edu.ntnu.idatt2001.nicolahb.units.CommanderUnit;
 import edu.ntnu.idatt2001.nicolahb.units.CavalryUnit;
+import edu.ntnu.idatt2001.nicolahb.units.RangedUnit;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +13,7 @@ public class BattleBetweenTwoUnitsTest {
      * All units will start with the same initial health.
      * Therefore, the first unit who attacks between equal units will win.
      */
-    private final static int startHealth = 30;
+    private final static int startHealth = 50;
 
     /*
      * When two instances of the same unit with the same starting health attack, the first attacker should win.
@@ -37,13 +38,11 @@ public class BattleBetweenTwoUnitsTest {
     }
 
     /*
-     * Some units do not have a static attack bonus.
-     * The attack bonus depends on how many times the unit has previously attacked.
-     * I have decided not to test if the resist bonus works. This is because it has been implemented the same way \
-     * as the attack bonus hence it seems unlikely it would give a different result.
+     * Some units do not have a static attack/resist bonus.
+     * The attack and resist bonuses depends on how many times the unit has previously attacked / been attacked.
      */
     @Nested
-    class AttackBonusIsDecremented {
+    class BonusesAreUpdated {
 
         @Test
         public void firstAttackBonusIsNotEqualToSecondAttackBonus() {
@@ -53,6 +52,19 @@ public class BattleBetweenTwoUnitsTest {
             /* Since the first unit has attacked, we expect the attack bonus to have decremented */
             first.attack(second);
             assertNotEquals(first.getAttackBonus(), second.getAttackBonus());
+        }
+
+        @Test
+        public void firstResistBonusIsMoreThanSecondResistBonusAndThirdAndFourthIsEqual() {
+            RangedUnit rangedUnit = new RangedUnit("First", startHealth);
+
+            int initialResistBonus = rangedUnit.getResistBonus();
+            int secondResistBonus = rangedUnit.getResistBonus();
+            int thirdResistBonus = rangedUnit.getResistBonus();
+            int fourthResistBonus = rangedUnit.getResistBonus();
+
+            assertTrue(initialResistBonus > secondResistBonus);
+            assertEquals(thirdResistBonus, fourthResistBonus);
         }
 
     }

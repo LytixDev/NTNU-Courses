@@ -39,6 +39,7 @@ public class Battle {
             Unit unitOne = armyOne.getRandom();
             Unit unitTwo = armyTwo.getRandom();
 
+            /* The variable r will be a random int from 0 to 1 */
             int r = new Random().nextInt(0, 2);
             if (r == 0) {
                 unitOne.attack(unitTwo);
