@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.ntnu.idatt2001.nicolahb.MainController">
+   <children>
+      <Button layoutX="53.0" layoutY="45.0" mnemonicParsing="false" onAction="#getNewHand" text="Get new hand" />
+      <Button layoutX="53.0" layoutY="94.0" mnemonicParsing="false" onAction="#checkHand" prefHeight="25.0" prefWidth="110.0" text="Check hand" />
+      <Label layoutX="59.0" layoutY="184.0" text="Has flush" />
+      <Label layoutX="56.0" layoutY="219.0" text="Has queen of spades" />
+      <Label layoutX="56.0" layoutY="251.0" text="Sum" />
+      <Label layoutX="56.0" layoutY="277.0" text="Hearts" />
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="362.0" layoutY="161.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@mylady.png" />
+         </image>
+      </ImageView>
+      <Text fx:id="currentHand" layoutX="219.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="No current hand" wrappingWidth="463.46875">
+         <font>
+            <Font size="35.0" />
+         </font>
+      </Text>
+      <Text fx:id="hasFlushField" layoutX="241.0" layoutY="197.0" strokeType="OUTSIDE" strokeWidth="0.0" text="None" wrappingWidth="136.46875" />
+      <Text fx:id="hasQueenField" layoutX="236.0" layoutY="232.0" strokeType="OUTSIDE" strokeWidth="0.0" text="None" wrappingWidth="127.46875" />
+      <Text fx:id="hasSumField" layoutX="236.0" layoutY="264.0" strokeType="OUTSIDE" strokeWidth="0.0" text="None" wrappingWidth="127.46875" />
+      <Text fx:id="hasHeartsField" layoutX="236.0" layoutY="290.0" strokeType="OUTSIDE" strokeWidth="0.0" text="None" wrappingWidth="127.46875" />
+   </children>
+</AnchorPane>
