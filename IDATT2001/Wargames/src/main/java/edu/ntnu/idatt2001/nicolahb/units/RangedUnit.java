@@ -3,6 +3,7 @@ package edu.ntnu.idatt2001.nicolahb.units;
 /**
  * Specialized subclass RangedUnit. Inherits from Unit.
  * @author Nicolai H. Brand
+ * @version 28.03.2022
  */
 public class RangedUnit extends Unit {
 

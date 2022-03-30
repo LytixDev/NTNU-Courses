@@ -1,4 +1,6 @@
 package edu.ntnu.idatt2001.nicolahb;
+import edu.ntnu.idatt2001.nicolahb.exceptions.SimulationAlreadyRanException;
+import edu.ntnu.idatt2001.nicolahb.filehandling.CSVFileHandler;
 import edu.ntnu.idatt2001.nicolahb.units.*;
 
 import java.util.ArrayList;
@@ -8,6 +10,7 @@ import java.util.ArrayList;
  * Runs a battle simulation.
  * Only for testing purposes.
  * @author Nicolai Brand.
+ * @version 28.03.2022
  */
 public class Main {
     static ArrayList<Unit> humanUnits = new ArrayList<>();
@@ -20,6 +23,7 @@ public class Main {
             fillArmies();
             Army humanArmy = new Army("Human army", humanUnits);
             Army orcishArmy = new Army("Orcish horde", orcishUnits);
+
             battle = new Battle(humanArmy, orcishArmy);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -30,7 +34,7 @@ public class Main {
         try {
             Army winner = battle.simulate();
             System.out.println("Winning army is " + winner.getName());
-        } catch (UnsupportedOperationException e) {
+        } catch (SimulationAlreadyRanException e) {
             System.out.println("Battle has already been played out");
         }
     }

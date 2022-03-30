@@ -2,7 +2,8 @@ package edu.ntnu.idatt2001.nicolahb.units;
 
 /**
  * Specialized subclass CavalryUnit. Inherits from Unit.
- * @author Nicolai H. Brand
+ * @author Nicolai H. Brand.
+ * @version 28.03.2022
  */
 public class CavalryUnit extends Unit {
 

@@ -3,6 +3,7 @@ package edu.ntnu.idatt2001.nicolahb.units;
 /**
  * Specialized subclass InfantryUnit. Inherits from Unit.
  * @author Nicolai H. Brand
+ * @version 28.03.2022
  */
 public class InfantryUnit extends Unit {
 

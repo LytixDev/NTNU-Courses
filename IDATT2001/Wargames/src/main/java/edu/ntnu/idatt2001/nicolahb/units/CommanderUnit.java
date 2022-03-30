@@ -3,6 +3,7 @@ package edu.ntnu.idatt2001.nicolahb.units;
 /**
  * Specialized subclass CommanderUnit. Inherits from Unit and CavalryUnit.
  * @author Nicolai H. Brand
+ * @version 28.03.2022
  */
 public class CommanderUnit extends CavalryUnit {
 

@@ -1,15 +1,20 @@
 package edu.ntnu.idatt2001.nicolahb;
 
-import edu.ntnu.idatt2001.nicolahb.units.Unit;
+import edu.ntnu.idatt2001.nicolahb.units.*;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * Class Army
  * The army has a list of units.
  * Two armies fight each other.
+ *
  * @author Nicolai Brand
+ * @version 28.03.2022
  */
 public class Army {
     private final String name;
@@ -18,8 +23,9 @@ public class Army {
     /**
      * Default constructor
      * Creates an empty list of Units.
-     * @param name, String: can't be empty.
-     * @throws IllegalArgumentException, if name is empty.
+     *
+     * @param name the name
+     * @throws IllegalArgumentException ,if name is empty.
      */
     public Army(String name) throws IllegalArgumentException {
         if (name.isBlank()) throw new IllegalArgumentException("Name can't be empty");
@@ -29,9 +35,10 @@ public class Army {
 
     /**
      * Constructor that takes in a list of Units.
-     * @param name, String: can't be empty.
-     * @param units, ArrayList<Unit>: object that stores the units.
-     * @throws IllegalArgumentException
+     *
+     * @param name  the name
+     * @param units the units
+     * @throws IllegalArgumentException the illegal argument exception
      */
     public Army(String name, ArrayList<Unit> units) throws IllegalArgumentException {
         if (name.isBlank()) throw new IllegalArgumentException("Name can't be empty");
@@ -41,7 +48,8 @@ public class Army {
 
     /**
      * Adds a Unit to the units list if the list does not already contain the unit.
-     * @param unit, Unit: an object of type Unit.
+     *
+     * @param unit the unit
      */
     public void addUnit(Unit unit) {
         if (!units.contains(unit))
@@ -50,15 +58,18 @@ public class Army {
 
     /**
      * Adds a list of Units to the unit list.
-     * @param units, ArrayList<Unit>: A list containing objects of type Unit.
+     *
+     * @param units the units
      */
     public void addAllUnits(ArrayList<Unit> units) {
         for (Unit toAdd : units)
             addUnit(toAdd);
     }
+
     /**
      * Remove a specified unit.
-     * @param unit, Unit.
+     *
+     * @param unit the unit
      */
     public void remove(Unit unit) {
         units.remove(unit);
@@ -66,15 +77,62 @@ public class Army {
 
     /**
      * Checks if the list of units is not empty.
+     *
      * @return boolean, true if list not empty.
      */
     public boolean hasUnits() {
         return !units.isEmpty();
     }
 
+
+    /**
+     * Gets all the infantry units stored in class field units.
+     *
+     * @return the infantry units as an ArrayList
+     */
+    public List<Unit> getInfantryUnits() {
+        return units.stream()
+                .filter(unit -> unit instanceof InfantryUnit)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    /**
+     * Gets all the cavalry units stored in class field units.
+     * Since the CommanderUnit inherits from CavalryUnit, we need to filter these out.
+     * @return the cavalry units as an ArrayList
+     */
+    public List<Unit> getCavalryUnits() {
+        return units.stream()
+                .filter(unit -> unit instanceof CavalryUnit && !(unit instanceof CommanderUnit))
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    /**
+     * Gets all the ranged units stored in class field units.
+     *
+     * @return the ranged units as an ArrayList
+     */
+    public List<Unit> getRangedUnits() {
+        return units.stream()
+                .filter(unit -> unit instanceof RangedUnit)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    /**
+     * Gets all the commander units stored in class field units.
+     *
+     * @return the commander units as an ArrayList
+     */
+    public List<Unit> getCommanderUnits() {
+        return units.stream()
+                .filter(unit -> unit instanceof CommanderUnit)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
     /**
      * Returns a random Unit from the list.
      * Returns null if there are is no Unit in units.
+     *
      * @return unit, Unit.
      */
     public Unit getRandom() {
@@ -84,6 +142,8 @@ public class Army {
     }
 
     /**
+     * Gets name.
+     *
      * @return name, String.
      */
     public String getName() {
@@ -91,15 +151,31 @@ public class Army {
     }
 
     /**
+     * Gets units.
+     *
      * @return units, ArrayList<Unit>.
      */
     public ArrayList<Unit> getUnits() {
         return units;
     }
 
+
+    /**
+     * Creates a String representation of the instance of the class that is comma separated.
+     * @return String, String representation of the class in a csv format.
+     */
+    public String csvRepresentation() {
+        /* Strings in Java are supposed to be immutable, so StringBuilder is used */
+        StringBuilder out = new StringBuilder();
+        out.append(name).append("\n");
+        units.forEach(unit -> out.append(unit.csvRepresentation()));
+        return out.toString();
+    }
+
+
     /**
      * Generates a string representation of the class.
-     * @return String, String representation of clas.
+     * @return String, String representation of class.
      */
     @Override
     public String toString() {

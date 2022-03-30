@@ -1,10 +1,13 @@
 package edu.ntnu.idatt2001.nicolahb.units;
 
 
+import java.util.Objects;
+
 /**
  * Unit abstract class.
  * The unit class serves as an abstract for all subsequent units.
  * @author Nicolai H. Brand
+ * @version 28.03.2022
  */
 abstract public class Unit {
     private final String name;
@@ -13,7 +16,7 @@ abstract public class Unit {
     private int armor;
 
     /**
-     * TO-DO add exception handling
+     * Creates an instance of the Unit class.
      * @param name, a short descriptive name of the type of unit.
      * @param health, a value that represents the health of the unit. Must be larger than zero.
      * @param attack, a value that represents the weapon of the unit.
@@ -85,6 +88,21 @@ abstract public class Unit {
     }
 
     /**
+     * Formats the data of the specific instance of Unit class on the format:
+     * "unit type,unit name,unit health"
+     * This is used when writing to file
+     * @return String, String representation of the object
+     */
+    public String csvRepresentation() {
+        return this.getClass().getSimpleName() +
+                "," +
+                name +
+                "," +
+                health +
+                "\n";
+    }
+
+    /**
      * @return String, string representation of the class
      */
     @Override
@@ -113,7 +131,9 @@ abstract public class Unit {
 
     @Override
     public boolean equals(Object o) {
-        return (this == o);
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Unit unit = (Unit) o;
+        return health == unit.health && attack == unit.attack && armor == unit.armor && Objects.equals(name, unit.name);
     }
-
 }

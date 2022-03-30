@@ -1,6 +1,7 @@
 package edu.ntnu.idatt2001.nicolahb;
 
 import edu.ntnu.idatt2001.nicolahb.units.Unit;
+import edu.ntnu.idatt2001.nicolahb.exceptions.SimulationAlreadyRanException;
 
 import java.util.Random;
 
@@ -8,6 +9,7 @@ import java.util.Random;
  * Class Battle
  * Purpose of the class is to simulate a battle between two armies consisting of multiple units.
  * @author Nicolai Brand.
+ * @version 28.03.2022
  */
 public class Battle {
     private Army armyOne;
@@ -30,11 +32,11 @@ public class Battle {
      * Every turn, a random army attacks the other with a random unit.
      * If a unit has health 0 it is removed.
      * This goes on as long as both armies have units.
-     * @throws UnsupportedOperationException, if the simulation has already run
+     * @throws SimulationAlreadyRanException, if the simulation has already run
      * @return Army, the army that still has a unit(s) left.
      */
-    public Army simulate() {
-        if (hasRun) throw new UnsupportedOperationException("Simulation has already run");
+    public Army simulate() throws SimulationAlreadyRanException {
+        if (hasRun) throw new SimulationAlreadyRanException("Simulation has already run");
         while (armyOne.hasUnits() && armyTwo.hasUnits()) {
             Unit unitOne = armyOne.getRandom();
             Unit unitTwo = armyTwo.getRandom();
@@ -51,6 +53,7 @@ public class Battle {
                     armyOne.remove(unitOne);
             }
         }
+
         this.hasRun = true;
         return armyOne.hasUnits() ? armyOne : armyTwo;
     }

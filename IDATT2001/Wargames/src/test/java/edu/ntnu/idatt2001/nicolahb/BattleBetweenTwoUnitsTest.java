@@ -3,6 +3,7 @@ package edu.ntnu.idatt2001.nicolahb;
 import edu.ntnu.idatt2001.nicolahb.units.CommanderUnit;
 import edu.ntnu.idatt2001.nicolahb.units.CavalryUnit;
 import edu.ntnu.idatt2001.nicolahb.units.RangedUnit;
+import edu.ntnu.idatt2001.nicolahb.units.Unit;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +43,7 @@ public class BattleBetweenTwoUnitsTest {
      * The attack and resist bonuses depends on how many times the unit has previously attacked / been attacked.
      */
     @Nested
-    class BonusesAreUpdated {
+    class HealthAndBonusIsUpdated {
 
         @Test
         public void firstAttackBonusIsNotEqualToSecondAttackBonus() {
@@ -67,5 +68,39 @@ public class BattleBetweenTwoUnitsTest {
             assertEquals(thirdResistBonus, fourthResistBonus);
         }
 
+        @Test
+        public void AttackingWithXDamageDecrementsOpponentsHealthByX() {
+            Unit attacker = new Unit("test", 10, 10, 0) {
+
+                @Override
+                public int getAttackBonus() {
+                    return 0;
+                }
+
+                @Override
+                public int getResistBonus() {
+                    return 0;
+                }
+            };
+
+            Unit defender = new Unit("test", 10, 0, 0) {
+
+                @Override
+                public int getAttackBonus() {
+                    return 0;
+                }
+
+                @Override
+                public int getResistBonus() {
+                    return 0;
+                }
+            };
+
+            int initialHealth = defender.getHealth();
+            attacker.attack(defender);
+            int postAttackHealth = defender.getHealth();
+
+            assertEquals(10, initialHealth - postAttackHealth);
+        }
     }
 }
