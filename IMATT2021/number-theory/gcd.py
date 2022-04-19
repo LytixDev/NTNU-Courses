@@ -13,4 +13,6 @@ def gcd(a, b):
     return a
 
 
-res = gcd(22, 12)
+assert 3 == gcd(15, 12)
+assert 2 == gcd(22, 12)
+assert 1 == gcd(192, 11)
