@@ -1,17 +1,20 @@
 package edu.ntnu.idatt2001.nicolahb.units;
 
+import edu.ntnu.idatt2001.nicolahb.TerrainType;
+
 /**
  * Specialized subclass CavalryUnit. Inherits from Unit.
  * @author Nicolai H. Brand.
- * @version 28.03.2022
+ * @version 13.04.2022
  */
 public class CavalryUnit extends Unit {
 
-    private static int defaultAttack = 20;
-    private static int defaultArmor = 12;
+    private static final int defaultAttack = 20;
+    private static final int defaultArmor = 12;
     private final static int resistBonus = 2;
     private final static int firstAttackBonus = 4;
     private final static int defaultAttackBonus = 2;
+    private final static int plainsBonus = 3;
     private int timesAttacked = 0;
 
     /**
@@ -42,19 +45,28 @@ public class CavalryUnit extends Unit {
      * The attack bonus depends on the amount of times it has attacked.
      * The first time it attacks it will return the firstAttackBonus.
      * Preceding attacks will return defaultAttackBonus.
+     * @param terrainType TerrainType, the type of terrain the attack is taking place at.
      * @return int, attack bonus.
      */
     @Override
-    public int getAttackBonus() {
+    public int getAttackBonus(TerrainType terrainType) {
         timesAttacked++;
-        return timesAttacked == 1 ? firstAttackBonus : defaultAttackBonus;
+        int bonus = timesAttacked == 1 ? firstAttackBonus : defaultAttackBonus;
+
+        if (terrainType == TerrainType.PLAINS)
+            bonus += plainsBonus;
+
+        return bonus;
     }
 
     /**
+     * If TerrainType is forest return 0.
+     *
+     * @param terrainType TerrainType, the type of terrain the attack is taking place at.
      * @return int, resist bonus.
      */
     @Override
-    public int getResistBonus() {
-        return resistBonus;
+    public int getResistBonus(TerrainType terrainType) {
+        return (terrainType == TerrainType.FOREST) ? 0 : resistBonus;
     }
 }

@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ArmyTest {
 
     @Nested
-    class ArmyConstructorIsValid {
+    public class ArmyConstructorIsValid {
         Army army;
 
         @Test
@@ -36,7 +36,7 @@ public class ArmyTest {
     }
 
     @Nested
-    class GetRandomUnitFromArmy {
+    public class GetRandomUnitFromArmy {
         Army army;
 
         @Test
@@ -56,7 +56,7 @@ public class ArmyTest {
     }
 
     @Nested
-    class getXUnits {
+    public class getXUnits {
 
         @Test
         public void getAllCavalryUnits() {

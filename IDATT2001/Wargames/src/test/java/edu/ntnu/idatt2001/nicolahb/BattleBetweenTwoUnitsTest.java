@@ -20,7 +20,7 @@ public class BattleBetweenTwoUnitsTest {
      * When two instances of the same unit with the same starting health attack, the first attacker should win.
      */
     @Nested
-    class FirstAttackerWinsBetweenEqualUnits {
+    public class FirstAttackerWinsBetweenEqualUnits {
 
         @Test
         public void firstAttackerBetweenEqualUnitsWin() {
@@ -28,10 +28,10 @@ public class BattleBetweenTwoUnitsTest {
             CommanderUnit second = new CommanderUnit("Second", startHealth);
 
             while(first.getHealth() > 0 && second.getHealth() > 0) {
-                first.attack(second);
+                first.attack(second, TerrainType.NEUTRAL);
                 if (second.getHealth() < 0)
                     break;
-                second.attack(first);
+                second.attack(first, TerrainType.NEUTRAL);
             }
 
             assertTrue(first.getHealth() > second.getHealth());
@@ -43,7 +43,7 @@ public class BattleBetweenTwoUnitsTest {
      * The attack and resist bonuses depends on how many times the unit has previously attacked / been attacked.
      */
     @Nested
-    class HealthAndBonusIsUpdated {
+    public class HealthAndBonusIsUpdated {
 
         @Test
         public void firstAttackBonusIsNotEqualToSecondAttackBonus() {
@@ -51,18 +51,18 @@ public class BattleBetweenTwoUnitsTest {
             CavalryUnit second = new CavalryUnit("Second", startHealth);
 
             /* Since the first unit has attacked, we expect the attack bonus to have decremented */
-            first.attack(second);
-            assertNotEquals(first.getAttackBonus(), second.getAttackBonus());
+            first.attack(second, TerrainType.NEUTRAL);
+            assertNotEquals(first.getAttackBonus(TerrainType.NEUTRAL), second.getAttackBonus(TerrainType.NEUTRAL));
         }
 
         @Test
         public void firstResistBonusIsMoreThanSecondResistBonusAndThirdAndFourthIsEqual() {
             RangedUnit rangedUnit = new RangedUnit("First", startHealth);
 
-            int initialResistBonus = rangedUnit.getResistBonus();
-            int secondResistBonus = rangedUnit.getResistBonus();
-            int thirdResistBonus = rangedUnit.getResistBonus();
-            int fourthResistBonus = rangedUnit.getResistBonus();
+            int initialResistBonus = rangedUnit.getResistBonus(TerrainType.NEUTRAL);
+            int secondResistBonus = rangedUnit.getResistBonus(TerrainType.NEUTRAL);
+            int thirdResistBonus = rangedUnit.getResistBonus(TerrainType.NEUTRAL);
+            int fourthResistBonus = rangedUnit.getResistBonus(TerrainType.NEUTRAL);
 
             assertTrue(initialResistBonus > secondResistBonus);
             assertEquals(thirdResistBonus, fourthResistBonus);
@@ -73,12 +73,12 @@ public class BattleBetweenTwoUnitsTest {
             Unit attacker = new Unit("test", 10, 10, 0) {
 
                 @Override
-                public int getAttackBonus() {
+                public int getAttackBonus(TerrainType ignored) {
                     return 0;
                 }
 
                 @Override
-                public int getResistBonus() {
+                public int getResistBonus(TerrainType ignored) {
                     return 0;
                 }
             };
@@ -86,18 +86,18 @@ public class BattleBetweenTwoUnitsTest {
             Unit defender = new Unit("test", 10, 0, 0) {
 
                 @Override
-                public int getAttackBonus() {
+                public int getAttackBonus(TerrainType ignored) {
                     return 0;
                 }
 
                 @Override
-                public int getResistBonus() {
+                public int getResistBonus(TerrainType ignored) {
                     return 0;
                 }
             };
 
             int initialHealth = defender.getHealth();
-            attacker.attack(defender);
+            attacker.attack(defender, TerrainType.NEUTRAL);
             int postAttackHealth = defender.getHealth();
 
             assertEquals(10, initialHealth - postAttackHealth);

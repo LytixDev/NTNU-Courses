@@ -1,5 +1,6 @@
 package edu.ntnu.idatt2001.nicolahb;
 
+import edu.ntnu.idatt2001.nicolahb.client.models.Logger;
 import edu.ntnu.idatt2001.nicolahb.units.Unit;
 import edu.ntnu.idatt2001.nicolahb.exceptions.SimulationAlreadyRanException;
 
@@ -9,11 +10,12 @@ import java.util.Random;
  * Class Battle
  * Purpose of the class is to simulate a battle between two armies consisting of multiple units.
  * @author Nicolai Brand.
- * @version 28.03.2022
+ * @version 01.05.2022
  */
 public class Battle {
     private Army armyOne;
     private Army armyTwo;
+    private final TerrainType terrainType;
     private boolean hasRun = false;
 
     /**
@@ -21,10 +23,12 @@ public class Battle {
      * Takes in two armies.
      * @param armyOne, Army.
      * @param armyTwo, Army.
+     * @param terrainType, TerrainType, the lay of the land of the battle.
      */
-    public Battle(Army armyOne, Army armyTwo) {
+    public Battle(Army armyOne, Army armyTwo, TerrainType terrainType) {
         this.armyOne = armyOne;
         this.armyTwo = armyTwo;
+        this.terrainType = terrainType;
     }
 
     /**
@@ -37,24 +41,87 @@ public class Battle {
      */
     public Army simulate() throws SimulationAlreadyRanException {
         if (hasRun) throw new SimulationAlreadyRanException("Simulation has already run");
-        while (armyOne.hasUnits() && armyTwo.hasUnits()) {
-            Unit unitOne = armyOne.getRandom();
-            Unit unitTwo = armyTwo.getRandom();
 
-            /* The variable r will be a random int from 0 to 1 */
-            int r = new Random().nextInt(0, 2);
-            if (r == 0) {
-                unitOne.attack(unitTwo);
-                if (unitTwo.getHealth() <= 0)
-                    armyTwo.remove(unitTwo);
-            } else {
-                unitTwo.attack(unitOne);
-                if (unitOne.getHealth() <= 0)
-                    armyOne.remove(unitOne);
-            }
+        while (armyOne.hasUnits() && armyTwo.hasUnits()) {
+            simulateAttack();
         }
 
         this.hasRun = true;
         return armyOne.hasUnits() ? armyOne : armyTwo;
+    }
+
+    public Army simulateStep() throws SimulationAlreadyRanException {
+        if (hasRun) throw new SimulationAlreadyRanException("Simulation has already run");
+        simulateAttack();
+
+        if (!armyOne.hasUnits()) {
+            this.hasRun = true;
+            return armyTwo;
+        }
+        if (!armyTwo.hasUnits()) {
+            this.hasRun = true;
+            return armyOne;
+        }
+
+        /* No winner yet, so return null */
+        return null;
+    }
+
+    public Army simulateStep(Logger log) throws SimulationAlreadyRanException {
+        if (hasRun) throw new SimulationAlreadyRanException("Simulation has already run");
+        simulateAttack(log);
+
+        if (!armyOne.hasUnits()) {
+            this.hasRun = true;
+            return armyTwo;
+        }
+        if (!armyTwo.hasUnits()) {
+            this.hasRun = true;
+            return armyOne;
+        }
+
+        /* No winner yet, so return null */
+        return null;
+    }
+
+    private void simulateAttack() {
+        Unit unitOne = armyOne.getRandom();
+        Unit unitTwo = armyTwo.getRandom();
+
+        /* The variable r will be a random int from 0 to 1 */
+        int r = new Random().nextInt(0, 2);
+        if (r == 0) {
+            unitOne.attack(unitTwo, terrainType);
+            if (unitTwo.getHealth() <= 0)
+                armyTwo.remove(unitTwo);
+        } else {
+            unitTwo.attack(unitOne, terrainType);
+            if (unitOne.getHealth() <= 0)
+                armyOne.remove(unitOne);
+        }
+    }
+
+    private void simulateAttack(Logger log) {
+        Unit unitOne = armyOne.getRandom();
+        Unit unitTwo = armyTwo.getRandom();
+
+        /* The variable r will be a random int from 0 to 1 */
+        int r = new Random().nextInt(0, 2);
+        if (r == 0) {
+            unitOne.attack(unitTwo, terrainType);
+            log.addLogItem(unitOne.getName() + " attacked " + unitTwo.getName() +
+                    " for " + unitOne.calculateAttackDamage(unitTwo, terrainType) + " damage");
+
+            if (unitTwo.getHealth() <= 0)
+                armyTwo.remove(unitTwo);
+
+        } else {
+            unitTwo.attack(unitOne, terrainType);
+            log.addLogItem(unitTwo.getName() + " attacked " + unitOne.getName() +
+                    " for " + unitTwo.calculateAttackDamage(unitOne, terrainType) + " damage");
+
+            if (unitOne.getHealth() <= 0)
+                armyOne.remove(unitOne);
+        }
     }
 }

@@ -3,12 +3,12 @@ package edu.ntnu.idatt2001.nicolahb.units;
 /**
  * Specialized subclass CommanderUnit. Inherits from Unit and CavalryUnit.
  * @author Nicolai H. Brand
- * @version 28.03.2022
+ * @version 13.04.2022
  */
 public class CommanderUnit extends CavalryUnit {
 
-    private static int defaultAttack = 25;
-    private static int defaultArmor = 15;
+    private static final int defaultAttack = 25;
+    private static final int defaultArmor = 15;
 
     /**
      * The Commander Unit inherits the attack and resist bonus from the CavalryUnit.

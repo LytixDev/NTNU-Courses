@@ -1,62 +1,52 @@
 package edu.ntnu.idatt2001.nicolahb;
-import edu.ntnu.idatt2001.nicolahb.exceptions.SimulationAlreadyRanException;
+import edu.ntnu.idatt2001.nicolahb.client.App;
 import edu.ntnu.idatt2001.nicolahb.filehandling.CSVFileHandler;
-import edu.ntnu.idatt2001.nicolahb.units.*;
+import edu.ntnu.idatt2001.nicolahb.units.CommanderUnit;
+import edu.ntnu.idatt2001.nicolahb.units.RangedUnit;
+import edu.ntnu.idatt2001.nicolahb.units.Unit;
 
-import java.util.ArrayList;
 
 /**
  * Class Main
- * Runs a battle simulation.
- * Only for testing purposes.
+ * Runs the program and is called on by default when launching the program.
  * @author Nicolai Brand.
- * @version 28.03.2022
+ * @version 20.04.2022
  */
 public class Main {
-    static ArrayList<Unit> humanUnits = new ArrayList<>();
-    static ArrayList<Unit> orcishUnits = new ArrayList<>();
-    static Battle battle;
 
     public static void main(String[] args) {
-        /* Fill the armies with units and create a battle instance */
-        try {
-            fillArmies();
-            Army humanArmy = new Army("Human army", humanUnits);
-            Army orcishArmy = new Army("Orcish horde", orcishUnits);
-
-            battle = new Battle(humanArmy, orcishArmy);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return;
-        }
-
-        /* Run the battle simulation */
-        try {
-            Army winner = battle.simulate();
-            System.out.println("Winning army is " + winner.getName());
-        } catch (SimulationAlreadyRanException e) {
-            System.out.println("Battle has already been played out");
-        }
+        App.main();
+        //testSim();
     }
 
-    public static void fillArmies() {
-        int i;
-        for (i = 0; i < 500; i++) {
-            humanUnits.add(new InfantryUnit("Footman", 100));
-            orcishUnits.add(new InfantryUnit("Grunt", 100));
+    public static void testSim() {
+        Army army1 = new Army("Chads");
+        Army army2 = new Army("Not chads");
+
+        Unit unit1 = new CommanderUnit("Turbo Chad", 100);
+        Unit unit2 = new CommanderUnit("Not turbo Chad", 100);
+        army1.addUnit(unit1);
+        army2.addUnit(unit2);
+
+        for (int i = 0; i < 50; i++) {
+            Unit unit_m = new RangedUnit("Mini chad", 10);
+            Unit unit_n = new RangedUnit("Mini not chad", 10);
+            army1.addUnit(unit_m);
+            army2.addUnit(unit_n);
         }
 
-        for (i = 0; i < 100; i++) {
-            humanUnits.add(new CavalryUnit("Knight", 100));
-            orcishUnits.add(new CavalryUnit("Raider", 100));
-        }
+        Battle battle = new Battle(army1, army2,TerrainType.NEUTRAL);
 
-        for (i = 0; i < 200; i++) {
-            humanUnits.add(new RangedUnit("Archer", 100));
-            orcishUnits.add(new RangedUnit("Spearman", 100));
+        try {
+            Army winner = battle.simulateStep();
+            while (winner == null) {
+                Thread.sleep(100);
+                System.out.println(army1.getUnits().size() + "-" + army2.getUnits().size());
+                winner = battle.simulateStep();
+            }
+            System.out.println(winner);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
-
-        humanUnits.add(new CommanderUnit("Mountain King", 180));
-        orcishUnits.add(new CommanderUnit("Gul'dan", 180));
     }
 }

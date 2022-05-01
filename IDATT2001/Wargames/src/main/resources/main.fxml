@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.ntnu.idatt2001.nicolahb.client.MainViewController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+         <children>
+            <HBox alignment="CENTER" prefHeight="35.0" prefWidth="427.0" VBox.vgrow="NEVER">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Army one name: ">
+                     <font>
+                        <Font size="18.0" />
+                     </font></Text>
+                  <Label fx:id="armyOneName" text="Label">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <opaqueInsets>
+                        <Insets left="20.0" />
+                     </opaqueInsets></Label>
+               </children>
+            </HBox>
+            <Button mnemonicParsing="false" onAction="#loadArmyOneBtn" text="Load army from file" />
+            <Label fx:id="armyOneFileName" alignment="CENTER" prefHeight="36.0" prefWidth="464.0" text="filename" textAlignment="CENTER" textFill="#5e5e5e">
+               <font>
+                  <Font size="12.0" />
+               </font></Label>
+            <Separator prefHeight="25.0" prefWidth="427.0" />
+            <HBox prefHeight="26.0" prefWidth="200.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Total units:" />
+                  <Label fx:id="tUnits1" prefHeight="17.0" prefWidth="284.0" text="Label">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding></Label>
+               </children>
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
+            </HBox>
+            <HBox prefHeight="26.0" prefWidth="200.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Total cavaltry units:" />
+                  <Label fx:id="cavUnits1" prefHeight="17.0" prefWidth="199.0" text="Label">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding></Label>
+               </children>
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
+            </HBox>
+            <HBox prefHeight="26.0" prefWidth="200.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Total commander units:" />
+                  <Label fx:id="comUnits1" prefHeight="17.0" prefWidth="160.0" text="Label">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding></Label>
+               </children>
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
+            </HBox>
+            <HBox prefHeight="26.0" prefWidth="200.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Total infantry units:" />
+                  <Label fx:id="infUnits1" prefHeight="17.0" prefWidth="150.0" text="Label">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding></Label>
+               </children>
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
+            </HBox>
+            <HBox prefHeight="56.0" prefWidth="427.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Total ranged units:" />
+                  <Label fx:id="ranUnits1" prefHeight="17.0" prefWidth="103.0" text="Label">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding></Label>
+               </children>
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
+            </HBox>
+            <Separator prefHeight="25.0" prefWidth="427.0" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="List of army one's units" />
+            <ListView fx:id="armyOneList" prefHeight="325.0" prefWidth="352.0">
+               <VBox.margin>
+                  <Insets left="10.0" right="10.0" />
+               </VBox.margin></ListView>
+         </children>
+      </VBox>
+      <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
+         <children>
+            <Separator orientation="VERTICAL" prefHeight="720.0" prefWidth="15.0" scaleX="2.0" />
+            <VBox alignment="TOP_CENTER">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Wargames">
+                     <font>
+                        <Font size="28.0" />
+                     </font></Text>
+                  <HBox alignment="TOP_CENTER" prefHeight="37.0" prefWidth="415.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Winning army is:" />
+                        <Label fx:id="winningArmyName" text="Label" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="TOP_CENTER" prefHeight="43.0" prefWidth="415.0">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#startSimulationBtn" text="Start" />
+                        <Button mnemonicParsing="false" onAction="#pauseSimulationBtn" text="Pause">
+                           <opaqueInsets>
+                              <Insets left="10.0" right="10.0" />
+                           </opaqueInsets></Button>
+                        <Button mnemonicParsing="false" onAction="#resetSimulatorBtn" text="Reset" />
+                     </children>
+                  </HBox>
+                  <VBox alignment="TOP_CENTER" prefHeight="63.0" prefWidth="415.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Choose terrain" />
+                        <ComboBox fx:id="terrainBox" prefWidth="150.0" />
+                     </children>
+                  </VBox>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Simulation log:" />
+                  <ListView fx:id="simulationLogList" prefHeight="471.0" prefWidth="409.0" />
+               </children>
+            </VBox>
+            <Separator orientation="VERTICAL" prefHeight="720.0" prefWidth="15.0" scaleX="2.0" />
+         </children>
+      </HBox>
+      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2">
+         <children>
+            <HBox alignment="CENTER" prefHeight="35.0" prefWidth="427.0" VBox.vgrow="NEVER">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Army two name: ">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Text>
+                  <Label fx:id="armyTwoName" text="Label">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <Button mnemonicParsing="false" onAction="#loadArmyTwoBtn" text="Load army from file" />
+            <Label fx:id="armyTwoFileName" alignment="CENTER" prefHeight="36.0" prefWidth="471.0" text="filename" textAlignment="CENTER" textFill="#5e5e5e">
+               <font>
+                  <Font size="12.0" />
+               </font></Label>
+            <Separator prefHeight="25.0" prefWidth="427.0" />
+            <HBox prefHeight="26.0" prefWidth="200.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Total units:" />
+                  <Label fx:id="tUnits2" prefHeight="17.0" prefWidth="195.0" text="Label">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
+            </HBox>
+            <HBox prefHeight="26.0" prefWidth="200.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Total cavaltry units:" />
+                  <Label fx:id="cavUnits2" prefHeight="17.0" prefWidth="162.0" text="Label">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
+            </HBox>
+            <HBox prefHeight="26.0" prefWidth="200.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Total commander units:" />
+                  <Label fx:id="comUnits2" prefHeight="17.0" prefWidth="141.0" text="Label">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
+            </HBox>
+            <HBox prefHeight="26.0" prefWidth="200.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Total infantry units:" />
+                  <Label fx:id="infUnits2" prefHeight="17.0" prefWidth="138.0" text="Label">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
+            </HBox>
+            <HBox prefHeight="56.0" prefWidth="427.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Total ranged units:" />
+                  <Label fx:id="ranUnits2" prefHeight="17.0" prefWidth="173.0" text="Label">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
+            </HBox>
+            <Separator prefHeight="25.0" prefWidth="427.0" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="List of army one's units" />
+            <ListView fx:id="armyTwoList" prefHeight="325.0" prefWidth="352.0">
+               <VBox.margin>
+                  <Insets left="10.0" right="10.0" />
+               </VBox.margin>
+            </ListView>
+         </children>
+      </VBox>
+   </children>
+</GridPane>

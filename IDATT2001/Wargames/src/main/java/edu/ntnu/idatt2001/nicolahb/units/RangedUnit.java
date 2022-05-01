@@ -1,9 +1,11 @@
 package edu.ntnu.idatt2001.nicolahb.units;
 
+import edu.ntnu.idatt2001.nicolahb.TerrainType;
+
 /**
  * Specialized subclass RangedUnit. Inherits from Unit.
  * @author Nicolai H. Brand
- * @version 28.03.2022
+ * @version 13.04.2022
  */
 public class RangedUnit extends Unit {
 
@@ -12,6 +14,8 @@ public class RangedUnit extends Unit {
     private final static int fullResistBonus = 6;
     private final static int minResistBonus = 2;
     private final static int attackBonus = 3;
+    private final static int hillBonus = 3;
+    private final static int forestPenalty = -2;
     private int timesResisted = 0;
 
     /**
@@ -41,10 +45,17 @@ public class RangedUnit extends Unit {
 
 
     /**
+     * @param terrainType TerrainType, the type of terrain the attack is taking place at.
      * @return int, attack bonus.
      */
     @Override
-    public int getAttackBonus() {
+    public int getAttackBonus(TerrainType terrainType) {
+        if (terrainType == TerrainType.HILL)
+            return attackBonus + hillBonus;
+
+        if (terrainType == TerrainType.FOREST)
+            return attackBonus + forestPenalty;
+
         return attackBonus;
     }
 
@@ -53,10 +64,13 @@ public class RangedUnit extends Unit {
      * The first time it will return the fullResistBonus.
      * The second time it will return fullResistBonus - 2.
      * Afterwards it will return minResistBonus.
+     * @param ignored TerrainType, the abstract methods requires a TerrainType, but in this case its ignored.
+     *                Due to the fact the method is abstract, the TerrainType parameter needs to be passed,
+     *                despite not being used.
      * @return int, resist bonus
      */
     @Override
-    public int getResistBonus() {
+    public int getResistBonus(TerrainType ignored) {
         timesResisted++;
         if (timesResisted == 1)
             return fullResistBonus;

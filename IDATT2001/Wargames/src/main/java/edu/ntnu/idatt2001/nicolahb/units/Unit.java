@@ -1,19 +1,21 @@
 package edu.ntnu.idatt2001.nicolahb.units;
 
+import edu.ntnu.idatt2001.nicolahb.TerrainType;
 
 import java.util.Objects;
+
 
 /**
  * Unit abstract class.
  * The unit class serves as an abstract for all subsequent units.
  * @author Nicolai H. Brand
- * @version 28.03.2022
+ * @version 01.05.2022
  */
 abstract public class Unit {
     private final String name;
     private int health;
-    private int attack;
-    private int armor;
+    private final int attack;
+    private final int armor;
 
     /**
      * Creates an instance of the Unit class.
@@ -43,13 +45,30 @@ abstract public class Unit {
     /**
      * Calculates the damage done on another unit and subsequently modifies its health.
      * Does apply the attack if the resistance is higher than the attack damage.
-     * @param opponent, enemy of any unit subclass.
+     * @param opponent    Unit, unit to be attacked.
+     * @param terrainType TerrainType, the type of terrain the attack is taking place at.
      */
-    public void attack(Unit opponent) {
-        int attackDamage = this.getAttack() + this.getAttackBonus();
-        int resistance = opponent.getArmor() + opponent.getResistBonus();
+    public void attack(Unit opponent, TerrainType terrainType) {
+        int attackDamage = this.getAttack() + this.getAttackBonus(terrainType);
+        int resistance = opponent.getArmor() + opponent.getResistBonus(terrainType);
         if (attackDamage > resistance)
             opponent.setHealth(opponent.getHealth() - attackDamage + resistance);
+    }
+
+    /**
+     * Calculates the damage that would be dealt on another unit.
+     * Only used for logging.
+     *
+     * @param opponent    Unit, unit to be attacked.
+     * @param terrainType TerrainType, the type of terrain the attack is taking place at.
+     */
+    public String calculateAttackDamage(Unit opponent, TerrainType terrainType) {
+        int attackDamage = this.getAttack() + this.getAttackBonus(terrainType);
+        int resistance = opponent.getArmor() + opponent.getResistBonus(terrainType);
+
+        if (attackDamage > resistance)
+            return String.valueOf(attackDamage - resistance);
+        return "0";
     }
 
     /**
@@ -107,33 +126,38 @@ abstract public class Unit {
      */
     @Override
     public String toString() {
-        return "Unit{" +
-                "name='" + name + '\'' +
-                ", health=" + health +
-                ", attack=" + attack +
-                ", armor=" + armor +
-                '}';
+        return  name + " - " + getClass().getSimpleName() +
+                " hp=" + health +
+                " attack=" + attack +
+                " armor=" + armor;
     }
 
     /**
      * Different units will be specialized in different things. Some units will have a high attack bonus,
      * others will not. Therefore, it is an abstract class.
+     * @param terrainType TerrainType, the type of terrain the attack is taking place at.
      * @return int, representation of the attack bonus
      */
-    public abstract int getAttackBonus();
+    public abstract int getAttackBonus(TerrainType terrainType);
 
     /**
      * Different units will be specialized in different things. Some units will have a high resist bonus,
      * others will not. Therefore, it is an abstract class.
+     * @param terrainType TerrainType, the type of terrain the attack is taking place at.
      * @return int, representation of the resist bonus
      */
-    public abstract int getResistBonus();
+    public abstract int getResistBonus(TerrainType terrainType);
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Unit unit = (Unit) o;
-        return health == unit.health && attack == unit.attack && armor == unit.armor && Objects.equals(name, unit.name);
+    /**
+     * Checks if between two units are the same as well as the same class.
+     * This is used instead of the traditional built-in equals() method to check for technical equality.
+     * This is done, as to have the ability to have multiple of the same unit in one army.
+     * This method is mainly used for testing.
+     * @param other Unit, unit to be compared with.
+     * @return boolean
+     */
+    public boolean equalFields(Unit other) {
+        return this.getClass() == other.getClass() && Objects.equals(this.name, other.name) && this.health == other.health;
     }
+
 }

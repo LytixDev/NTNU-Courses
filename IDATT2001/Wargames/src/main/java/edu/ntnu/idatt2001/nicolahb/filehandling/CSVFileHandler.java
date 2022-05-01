@@ -2,10 +2,7 @@ package edu.ntnu.idatt2001.nicolahb.filehandling;
 
 import edu.ntnu.idatt2001.nicolahb.Army;
 import edu.ntnu.idatt2001.nicolahb.exceptions.CorruptedArmyFileException;
-import edu.ntnu.idatt2001.nicolahb.units.CavalryUnit;
-import edu.ntnu.idatt2001.nicolahb.units.CommanderUnit;
-import edu.ntnu.idatt2001.nicolahb.units.InfantryUnit;
-import edu.ntnu.idatt2001.nicolahb.units.RangedUnit;
+import edu.ntnu.idatt2001.nicolahb.units.*;
 
 import java.io.*;
 
@@ -13,6 +10,10 @@ import java.io.*;
  * Class CSVFileHandler.
  * This class deals with writing an army to a comma separated value file.
  * It also reads a csv file that contains data about an army and instantiates an army based on said data.
+ *
+ * Instead of breaking normal program executions, I think it makes more sense to continue
+ * in the event that a unit has an invalid health or type. In effect, a unit whose health or type is invalid is
+ * skipped and not added to the army.
  * @author Nicolai H. Brand.
  * @version 28.03.2022
  */
@@ -78,7 +79,7 @@ public class CSVFileHandler {
                  * skipped and not added to the army.
                  */
                 try {
-                    unitHealth = Integer.parseInt(split[2]);
+                    unitHealth = Integer.parseInt(split[2].trim());
                 } catch (Exception e) {
                     continue;
                 }
@@ -87,16 +88,15 @@ public class CSVFileHandler {
                     continue;
 
                 /*
-                 * Undefined unit types are ignored.
+                 * Thrown exception is dealt with as described in javadoc.
+                 * It would be advantages to inform the user that an error occurred.
                  */
-                if (unitType.equals("InfantryUnit")) army.addUnit(new InfantryUnit(unitName, unitHealth));
-                if (unitType.equals("RangedUnit")) army.addUnit(new RangedUnit(unitName, unitHealth));
-                if (unitType.equals("CavalryUnit")) army.addUnit(new CavalryUnit(unitName, unitHealth));
-                if (unitType.equals("CommanderUnit")) army.addUnit(new CommanderUnit(unitName, unitHealth));
+                try {
+                    army.addUnit(UnitFactory.buildUnit(unitType, unitName, unitHealth));
+                } catch (IllegalArgumentException ignored) {}
             }
         }
 
         return army;
-
     }
 }

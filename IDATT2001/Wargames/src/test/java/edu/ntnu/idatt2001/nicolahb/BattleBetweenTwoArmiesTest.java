@@ -11,14 +11,15 @@ import static org.junit.jupiter.api.Assertions.*;
 public class BattleBetweenTwoArmiesTest {
 
     @Nested
-    class OnlyWinnerHasUnits {
+    public class OnlyWinnerHasUnits {
         Army armyOne;
         Army armyTwo;
+        TerrainType terrainType = TerrainType.NEUTRAL;
 
         /*
          * Creates army instances and fills them with some test units
          */
-        void prepareTest() {
+        public void prepareTest() {
             armyOne = new Army("Army one");
             armyTwo = new Army("Army two");
 
@@ -31,9 +32,9 @@ public class BattleBetweenTwoArmiesTest {
          * We expect the winning army to have units left.
          */
         @Test
-        void winnerHasUnits(){
+        public void winnerHasUnits(){
             prepareTest();
-            Battle battle = new Battle(armyOne, armyTwo);
+            Battle battle = new Battle(armyOne, armyTwo, terrainType);
             try {
                 Army winner = battle.simulate();
                 assertTrue(winner.hasUnits());
@@ -47,9 +48,9 @@ public class BattleBetweenTwoArmiesTest {
          * Losing means you are out of units, so we expect the losing army to have no units.
          */
         @Test
-        void loserDoesNotHaveUnits() {
+        public void loserDoesNotHaveUnits() {
             prepareTest();
-            Battle battle = new Battle(armyOne, armyTwo);
+            Battle battle = new Battle(armyOne, armyTwo, terrainType);
 
             try {
                 Army winner = battle.simulate();
@@ -66,14 +67,14 @@ public class BattleBetweenTwoArmiesTest {
     }
 
     @Nested
-    class BattleSimulation {
+    public class BattleSimulation {
         Army armyOne;
         Army armyTwo;
 
         /*
          * Creates army instances and fills them with some test units
          */
-        void prepareTest() {
+        public void prepareTest() {
             armyOne = new Army("Army one");
             armyTwo = new Army("Army two");
 
@@ -84,7 +85,7 @@ public class BattleBetweenTwoArmiesTest {
         @Test
         public void battleCanOnlyRunOnce() {
             prepareTest();
-            Battle battle = new Battle(armyOne, armyTwo);
+            Battle battle = new Battle(armyOne, armyTwo, TerrainType.NEUTRAL);
 
             try {
                 battle.simulate();
@@ -102,7 +103,7 @@ public class BattleBetweenTwoArmiesTest {
     }
 
     @Nested
-    class DeadUnitIsRemovedFromArmy {
+    public class DeadUnitIsRemovedFromArmy {
 
         @Test
         public void unitWithZeroHealthIsRemovedFromArmy() {
@@ -113,12 +114,12 @@ public class BattleBetweenTwoArmiesTest {
             Unit weakUnit = new InfantryUnit("Footman", 1);
 
             /* weakUnit's health will fall below zero */
-            chadUnit.attack(weakUnit);
+            chadUnit.attack(weakUnit, TerrainType.NEUTRAL);
 
             armyOne.addUnit(chadUnit);
             armyTwo.addUnit(weakUnit);
 
-            Battle battle = new Battle(armyOne, armyTwo);
+            Battle battle = new Battle(armyOne, armyTwo, TerrainType.NEUTRAL);
 
             try {
                 battle.simulate();

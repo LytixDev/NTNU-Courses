@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class UnitInitTest {
 
     @Nested
-    class CreateLegalUnit {
+    public class CreateLegalUnit {
 
         @Test
         public void unitNameCannotBeEmpty() {

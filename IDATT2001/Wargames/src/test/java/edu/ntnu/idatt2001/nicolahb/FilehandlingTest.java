@@ -17,10 +17,17 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FilehandlingTest {
 
     @Nested
-    class WrittenArmyEqualsReadArmy {
+    public class WrittenArmyEqualsReadArmy {
 
         @Test
-        public void writeArmyAndReadInSameArmy() {
+        public void writeArmyAndReadIsSameArmy() {
+            /*
+             * This test passes.
+             * For this reason I have not made tests to make sure every component of reading and writing an army
+             * works as intended, since the system as a whole works as intended. This being said, I have seen it
+             * necessary to create tests for the cases where the csv file is corrupted or has unexpected data.
+             */
+
             Army army = new Army("According to all known laws of aviation ...");
 
             Unit unit1 = new InfantryUnit("Unit 1", 68);
@@ -38,14 +45,19 @@ public class FilehandlingTest {
             try {
                 CSVFileHandler.writeArmyData(army, filePath);
                 Army parsedArmy = CSVFileHandler.parseArmy(filePath);
+
                 /*
-                 * Here we see the two armies are identical as defined by the equals() method in Army.
-                 * For this reason I have not made tests to make sure every component of reading and writing an army
-                 * works as intended, since the system as a whole works as intended. This being said, I have seen it
-                 * necessary to create tests for the cases where the csv file is corrupted or has unexpected data.
-                 *
+                 * The parsedArmy will contain the same units as the army, but they will not be considered equal
+                 * as defined in the equals() method.
+                 * This is because I have decided to be able to have equal units in the same army, and so the
+                 * tradeoff is that it's a bit more work to check for equality. This is never an issue in the main code,
+                 * only a slight inconvenience when for testing equality.
                  */
-                assertEquals(army, parsedArmy);
+
+                assertEquals(army.getName(), parsedArmy.getName());
+                assertEquals(army.getUnits().size(), parsedArmy.getUnits().size());
+                assertEquals(army.getInfantryUnits().size(), parsedArmy.getInfantryUnits().size());
+                assertEquals(army.getRangedUnits().size(), parsedArmy.getRangedUnits().size());
 
                 /* Remove newly created file */
                 File file = new File(filePath);
@@ -59,7 +71,7 @@ public class FilehandlingTest {
 
 
     @Nested
-    class BadDataIsProperlyDealtWith {
+    public class BadDataIsProperlyDealtWith {
         String filePath;
 
         private void prepareTest() {
@@ -97,6 +109,35 @@ public class FilehandlingTest {
             try {
                 Army parsedArmy = CSVFileHandler.parseArmy(filePath);
                 assertEquals(1, parsedArmy.getUnits().size());
+            } catch (Exception e) {
+                fail();
+            }
+
+            endTest();
+        }
+
+        @Test
+        public void legalUnitButWrongCapitalizationIsAdded() {
+            /*
+             * My implementation of UnitFactory is done in a way that makes sure
+             * that wrong capitalization yields intended result.
+             * This indirectly tests the UnitFactory class.
+             */
+            prepareTest();
+
+            try (FileWriter fw = new FileWriter(filePath)){
+                fw.write("Army name\n");
+                /* small 'i' */
+                fw.write("infantryUnit,Authentic,10");
+            } catch (IOException e) {
+                fail();
+            }
+
+            try {
+                Army parsedArmy = CSVFileHandler.parseArmy(filePath);
+                assertEquals(1, parsedArmy.getUnits().size());
+                /* 'infantryUnit' is interpreted as 'InfantryUnit' */
+                assertTrue(parsedArmy.getUnits().get(0) instanceof InfantryUnit);
             } catch (Exception e) {
                 fail();
             }
