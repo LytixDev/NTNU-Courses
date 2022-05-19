@@ -9,7 +9,7 @@ import java.util.Objects;
  * Unit abstract class.
  * The unit class serves as an abstract for all subsequent units.
  * @author Nicolai H. Brand
- * @version 01.05.2022
+ * @version 07.05.2022
  */
 abstract public class Unit {
     private final String name;
@@ -121,15 +121,20 @@ abstract public class Unit {
                 "\n";
     }
 
+    public String guiRepresentation() {
+        return "'" + name + "'" + " of type " + this.getClass().getSimpleName() + "\n" +
+                "health = " + health + "\n" +
+                "attack = " + attack + "\n" +
+                "armor = " + armor;
+    }
+
     /**
      * @return String, string representation of the class
      */
     @Override
     public String toString() {
         return  name + " - " + getClass().getSimpleName() +
-                " hp=" + health +
-                " attack=" + attack +
-                " armor=" + armor;
+                " hp=" + health;
     }
 
     /**

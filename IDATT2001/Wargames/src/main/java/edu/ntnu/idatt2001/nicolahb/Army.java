@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
  * Two armies fight each other.
  *
  * @author Nicolai Brand
- * @version 28.03.2022
+ * @version 16.05.2022
  */
 public class Army {
-    private final String name;
+    private String name;
     private ArrayList<Unit> units;
 
     /**
@@ -47,6 +47,21 @@ public class Army {
     }
 
     /**
+     * @return a deep copy of itself.
+     */
+    public Army deepCopy() {
+        Army copy = new Army(this.name);
+        for (Unit unit : getUnits())
+            /*
+             * There is an exception here which is not caught as unit.getClass().getSimpleName() will always give
+             * valid input.
+             */
+            copy.addUnit(UnitFactory.buildUnit(unit.getClass().getSimpleName(), unit.getName(), unit.getHealth()));
+
+        return copy;
+    }
+
+    /**
      * Adds a Unit to the units list if the list does not already contain the unit.
      *
      * @param unit the unit
@@ -61,7 +76,7 @@ public class Army {
      *
      * @param units the units
      */
-    public void addAllUnits(ArrayList<Unit> units) {
+    public void addAllUnits(List<Unit> units) {
         for (Unit toAdd : units)
             addUnit(toAdd);
     }
@@ -73,6 +88,14 @@ public class Army {
      */
     public void remove(Unit unit) {
         units.remove(unit);
+    }
+
+    /**
+     * Removes all units.
+     *
+     */
+    public void removeAll() {
+        units.clear();
     }
 
     /**
@@ -170,6 +193,15 @@ public class Army {
         out.append(name).append("\n");
         units.forEach(unit -> out.append(unit.csvRepresentation()));
         return out.toString();
+    }
+
+    /**
+     * Renames the army
+     *
+     * @param newName String, new name of the army.
+     */
+    public void setName(String newName) {
+        this.name = newName;
     }
 
 

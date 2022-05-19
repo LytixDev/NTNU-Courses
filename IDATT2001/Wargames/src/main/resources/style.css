@@ -1,7 +1,68 @@
+/*
+    Color Theme:
+    Background    #415C73
+    Dark Blue     #33678A
+    Light Blue    #78A6C9
+    White Text    #EFEFEF
+    Off White     #EAEFF3
+    Muted Red     #E65C4F
+    Brown         #735841
+*/
+
 .root {
-    -fx-font-size: 16pt;
+    -fx-font-size: 14pt;
 }
 
-.list-view {
-    -fx-font-size: 12pt;
+#root {
+    -fx-background-color: linear-gradient(from 15% 15% to 75% 75%, #2A3950, #353C51);
+    /* -fx-background-color: #353C51; */
+}
+
+.label {
+    -fx-text-fill: #EFEFEF;
+}
+
+#tUnits1, #cavUnits1, #comUnits1, #infUnits1, #ranUnits1, #tUnits2, #cavUnits2, #comUnits2, #infUnits2, #ranUnits2,
+ #health1, #attack1, #armor1, #health2, #attack2, #armor2 {
+    -fx-text-fill: #000000;
+    -fx-font-size: 10pt;
+}
+
+#smallText {
+    -fx-font-size: 10pt;
+}
+
+#head {
+    -fx-font-size: 24pt;
+}
+
+#subhead {
+    -fx-font-size: 20pt;
+}
+
+.list-view, .titled-pane {
+    -fx-font-size: 14pt;
+    -fx-background-color: #EAEFF3;
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: #112B3C;
+    -fx-text-fill: #EFEFEF;
+}
+
+.titled-pane, .titled-pane > .title:hover {
+    -fx-color: #112B3C;
+}
+
+.button, .choice-box, .titled-pane {
+    -fx-background-radius: 10px;
+    -fx-text-fill: #EFEFEF;
+}
+
+.button {
+    -fx-background-color: #78A6C9;
+}
+
+.button:hover {
+    -fx-background-color: #33678A;
 }

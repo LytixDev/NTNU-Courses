@@ -1,8 +1,9 @@
 package edu.ntnu.idatt2001.nicolahb;
 
-import edu.ntnu.idatt2001.nicolahb.client.models.Logger;
+import edu.ntnu.idatt2001.nicolahb.gui.models.Logger;
 import edu.ntnu.idatt2001.nicolahb.units.Unit;
 import edu.ntnu.idatt2001.nicolahb.exceptions.SimulationAlreadyRanException;
+import javafx.application.Platform;
 
 import java.util.Random;
 
@@ -10,7 +11,7 @@ import java.util.Random;
  * Class Battle
  * Purpose of the class is to simulate a battle between two armies consisting of multiple units.
  * @author Nicolai Brand.
- * @version 01.05.2022
+ * @version 18.05.2022
  */
 public class Battle {
     private Army armyOne;
@@ -43,7 +44,7 @@ public class Battle {
         if (hasRun) throw new SimulationAlreadyRanException("Simulation has already run");
 
         while (armyOne.hasUnits() && armyTwo.hasUnits()) {
-            simulateAttack();
+            simulateAttackGUI();
         }
 
         this.hasRun = true;
@@ -52,7 +53,7 @@ public class Battle {
 
     public Army simulateStep() throws SimulationAlreadyRanException {
         if (hasRun) throw new SimulationAlreadyRanException("Simulation has already run");
-        simulateAttack();
+        simulateAttackGUI();
 
         if (!armyOne.hasUnits()) {
             this.hasRun = true;
@@ -69,7 +70,7 @@ public class Battle {
 
     public Army simulateStep(Logger log) throws SimulationAlreadyRanException {
         if (hasRun) throw new SimulationAlreadyRanException("Simulation has already run");
-        simulateAttack(log);
+        simulateAttackGUI(log);
 
         if (!armyOne.hasUnits()) {
             this.hasRun = true;
@@ -84,7 +85,7 @@ public class Battle {
         return null;
     }
 
-    private void simulateAttack() {
+    private void simulateAttackGUI() {
         Unit unitOne = armyOne.getRandom();
         Unit unitTwo = armyTwo.getRandom();
 
@@ -101,7 +102,12 @@ public class Battle {
         }
     }
 
-    private void simulateAttack(Logger log) {
+    /**
+     * Specialized method meant to be called from a JAVAFX application.
+     * Might not be called from the main application thread.
+     * @param log
+     */
+    private void simulateAttackGUI(Logger log) {
         Unit unitOne = armyOne.getRandom();
         Unit unitTwo = armyTwo.getRandom();
 
@@ -109,16 +115,19 @@ public class Battle {
         int r = new Random().nextInt(0, 2);
         if (r == 0) {
             unitOne.attack(unitTwo, terrainType);
-            log.addLogItem(unitOne.getName() + " attacked " + unitTwo.getName() +
-                    " for " + unitOne.calculateAttackDamage(unitTwo, terrainType) + " damage");
+            /* Method might be called from a thread that is outside the main application thread,
+            * and therefore needs to queue updates to the GUI.
+            */
+            Platform.runLater(() -> log.addLogItem(unitOne.getName() + " attacked " + unitTwo.getName() +
+                    " for " + unitOne.calculateAttackDamage(unitTwo, terrainType) + " damage"));
 
             if (unitTwo.getHealth() <= 0)
                 armyTwo.remove(unitTwo);
 
         } else {
             unitTwo.attack(unitOne, terrainType);
-            log.addLogItem(unitTwo.getName() + " attacked " + unitOne.getName() +
-                    " for " + unitTwo.calculateAttackDamage(unitOne, terrainType) + " damage");
+            Platform.runLater(() -> log.addLogItem(unitTwo.getName() + " attacked " + unitOne.getName() +
+                    " for " + unitTwo.calculateAttackDamage(unitOne, terrainType) + " damage"));
 
             if (unitOne.getHealth() <= 0)
                 armyOne.remove(unitOne);

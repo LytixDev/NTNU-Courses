@@ -51,7 +51,7 @@ public class ArmyTest {
             units.add(new CommanderUnit("test", 10));
             army = new Army("test", units);
             /* Could also check to see if army.getRandom() does not return null */
-            assertTrue(army.getRandom() instanceof Unit);
+            assertTrue(army.getRandom() != null);
         }
     }
 

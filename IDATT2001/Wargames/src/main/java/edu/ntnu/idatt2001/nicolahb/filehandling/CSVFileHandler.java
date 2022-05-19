@@ -15,7 +15,7 @@ import java.io.*;
  * in the event that a unit has an invalid health or type. In effect, a unit whose health or type is invalid is
  * skipped and not added to the army.
  * @author Nicolai H. Brand.
- * @version 28.03.2022
+ * @version 19.05.2022
  */
 public class CSVFileHandler {
 
@@ -29,7 +29,7 @@ public class CSVFileHandler {
      * @throws IllegalArgumentException illegal argument exception if army is null
      */
     public static void writeArmyData(Army army, String filePath) throws IOException, IllegalArgumentException {
-        if (army == null) throw new IllegalArgumentException("Cannot null army to file.");
+        if (army == null) throw new IllegalArgumentException("Cannot write null army to file.");
 
         try (FileWriter fw = new FileWriter(filePath)) {
             fw.write(army.csvRepresentation());
@@ -69,8 +69,8 @@ public class CSVFileHandler {
                             " elements.");
                 }
 
-                String unitType = split[0];
-                String unitName = split[1];
+                String unitType = split[0].trim();
+                String unitName = split[1].trim();
                 int unitHealth;
 
                 /*
@@ -89,7 +89,7 @@ public class CSVFileHandler {
 
                 /*
                  * Thrown exception is dealt with as described in javadoc.
-                 * It would be advantages to inform the user that an error occurred.
+                 * It would be advantageous to inform the user that an error occurred.
                  */
                 try {
                     army.addUnit(UnitFactory.buildUnit(unitType, unitName, unitHealth));

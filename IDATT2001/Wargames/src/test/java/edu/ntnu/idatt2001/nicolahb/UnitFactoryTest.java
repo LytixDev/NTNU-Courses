@@ -1,9 +1,6 @@
 package edu.ntnu.idatt2001.nicolahb;
 
-import edu.ntnu.idatt2001.nicolahb.units.CavalryUnit;
-import edu.ntnu.idatt2001.nicolahb.units.RangedUnit;
-import edu.ntnu.idatt2001.nicolahb.units.Unit;
-import edu.ntnu.idatt2001.nicolahb.units.UnitFactory;
+import edu.ntnu.idatt2001.nicolahb.units.*;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -33,13 +30,24 @@ public class UnitFactoryTest {
         }
 
         @Test
+        public void legalUnitButBadCapitalizationIsStillBuilt() {
+            /* Test whether the raw unit type can handle wrong capitalization */
+            try {
+                Unit unit = UnitFactory.buildUnit("CAVALRYunit", "name", 10);
+            } catch (IllegalArgumentException ignored) {
+                fail("Failed to build unit with correct semantic unit type, but wrong syntax (wrong capitalization)");
+            }
+        }
+
+        @Test
         public void legalUnitsAreBuilt() {
             /* Tests whether the correct unit type is correct AND that there has been created the expected amount */
             try {
-                List<Unit> units = UnitFactory.buildUnits("RangedUnit", "name", 10, 100 );
+                List<Unit> units = UnitFactory.buildUnits("RangedUnit", "name", 10, 100);
                 assertEquals(100, units.size());
                 /* Make sure every unit created is of the specified type */
                 assertEquals(100, units.stream().filter(unit -> unit instanceof RangedUnit).count());
+                assertEquals(0, units.stream().filter(unit -> unit instanceof InfantryUnit).count());
             } catch (IllegalArgumentException ignored) {
                 fail();
             }
@@ -56,7 +64,7 @@ public class UnitFactoryTest {
 
             try {
                 Unit unit = UnitFactory.buildUnit(undefinedType, "name", 10);
-                fail();
+                fail("Unit with undefined type was created, but should not have been.");
             } catch (IllegalArgumentException e) {
                 assertEquals(expectedErrorMsg, e.getMessage());
             }

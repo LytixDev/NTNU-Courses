@@ -21,7 +21,6 @@ public class BattleBetweenTwoUnitsTest {
      */
     @Nested
     public class FirstAttackerWinsBetweenEqualUnits {
-
         @Test
         public void firstAttackerBetweenEqualUnitsWin() {
             CommanderUnit first = new CommanderUnit("First", startHealth);

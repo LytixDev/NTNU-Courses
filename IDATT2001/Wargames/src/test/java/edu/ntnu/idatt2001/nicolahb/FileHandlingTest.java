@@ -9,12 +9,13 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FilehandlingTest {
+public class FileHandlingTest {
 
     @Nested
     public class WrittenArmyEqualsReadArmy {
@@ -54,6 +55,7 @@ public class FilehandlingTest {
                  * only a slight inconvenience when for testing equality.
                  */
 
+                assertNotNull(parsedArmy);
                 assertEquals(army.getName(), parsedArmy.getName());
                 assertEquals(army.getUnits().size(), parsedArmy.getUnits().size());
                 assertEquals(army.getInfantryUnits().size(), parsedArmy.getInfantryUnits().size());
@@ -108,11 +110,11 @@ public class FilehandlingTest {
 
             try {
                 Army parsedArmy = CSVFileHandler.parseArmy(filePath);
+                assertNotEquals(2, parsedArmy.getUnits().size());
                 assertEquals(1, parsedArmy.getUnits().size());
             } catch (Exception e) {
                 fail();
             }
-
             endTest();
         }
 
@@ -141,7 +143,28 @@ public class FilehandlingTest {
             } catch (Exception e) {
                 fail();
             }
+            endTest();
+        }
 
+        @Test
+        public void spacesBetweenValuesAreIgnored() {
+            /* Spaces between commas should be ignored or "swallowed" by the parser */
+            prepareTest();
+
+            try (FileWriter fw = new FileWriter(filePath)){
+                fw.write("Army name\n");
+                fw.write("infantryUnit ,  Name, 10 ");
+            } catch (IOException e) {
+                fail();
+            }
+
+            try {
+                Army parsedArmy = CSVFileHandler.parseArmy(filePath);
+                assertNotEquals(0, parsedArmy.getUnits().size());
+                assertTrue(parsedArmy.getInfantryUnits().get(0).equalFields(new InfantryUnit("Name", 10)));
+            } catch (Exception e) {
+                fail("Could not parsed army with extra whitespace that should have been ignored.");
+            }
             endTest();
         }
 
@@ -167,7 +190,7 @@ public class FilehandlingTest {
                 fail();
             } catch (CorruptedArmyFileException e) {
                 /* We expect this exceptions in particular to be thrown */
-                assertTrue(true);
+                assertTrue(e instanceof CorruptedArmyFileException);
             } catch (IOException | IllegalArgumentException e) {
                 fail();
             }
@@ -176,7 +199,7 @@ public class FilehandlingTest {
         }
 
         @Test
-        public void unitHealthIsNotAPositiveIntegerIsIgnored() {
+        public void unitHealthThatIsNotAPositiveIntegerIsIgnored() {
             prepareTest();
 
             /*
@@ -200,11 +223,20 @@ public class FilehandlingTest {
                 Army army = CSVFileHandler.parseArmy(filePath);
                 assertFalse(army.hasUnits());
             } catch (Exception e) {
-                System.out.println(e.getMessage());
                 fail();
             }
 
             endTest();
+        }
+
+        @Test
+        public void parsingFileThatDoesntExistThrowsError() {
+            try {
+                Army parsedArmy = CSVFileHandler.parseArmy("/bin/i_do_not_exist.csv");
+                fail("Parsed army that does not exist, when it should have throwed an error");
+            } catch (Exception e) {
+                assertTrue(e instanceof FileNotFoundException);
+            }
         }
     }
 }
