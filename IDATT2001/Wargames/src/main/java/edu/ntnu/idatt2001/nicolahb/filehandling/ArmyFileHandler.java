@@ -7,21 +7,23 @@ import edu.ntnu.idatt2001.nicolahb.units.*;
 import java.io.*;
 
 /**
- * Class CSVFileHandler.
- * This class deals with writing an army to a comma separated value file.
- * It also reads a csv file that contains data about an army and instantiates an army based on said data.
+ * Class ArmyFileHandler.
+ * This class deals with writing an army to a value separated file.
+ * It also reads a file that contains data about an army and instantiates an army based on said data.
  *
  * Instead of breaking normal program executions, I think it makes more sense to continue
  * in the event that a unit has an invalid health or type. In effect, a unit whose health or type is invalid is
  * skipped and not added to the army.
  * @author Nicolai H. Brand.
- * @version 19.05.2022
+ * @version 21.05.2022
  */
-public class CSVFileHandler {
+public class ArmyFileHandler {
 
+    private final static String DELIMITER = ",";
     /**
      * Write army data to a given file.
      * Uses the csvRepresentation() method in the army as the data to be written.
+     * Values are separated by a delimiter set in the field DELIMITER.
      *
      * @param army     the army to be written to the file.
      * @param filePath path to the file. Can both be a full path and a relative path.
@@ -32,7 +34,7 @@ public class CSVFileHandler {
         if (army == null) throw new IllegalArgumentException("Cannot write null army to file.");
 
         try (FileWriter fw = new FileWriter(filePath)) {
-            fw.write(army.csvRepresentation());
+            fw.write(army.dataRepresentation(DELIMITER));
         }
     }
 
@@ -61,17 +63,18 @@ public class CSVFileHandler {
 
             while ((line = bf.readLine()) != null) {
                 lineCount++;
-                String[] split = line.split(",");
+                String[] split = line.split(DELIMITER);
 
-                if (split.length != 3) {
+                if (split.length != 3 && split.length != 4) {
                     throw new CorruptedArmyFileException(filePath + " is corrupted. All lines apart from the first" +
-                            " should contain three elements, but line " + lineCount + " contains " + split.length +
+                            " should contain three or four elements, but line " + lineCount + " contains " + split.length +
                             " elements.");
                 }
 
                 String unitType = split[0].trim();
                 String unitName = split[1].trim();
                 int unitHealth;
+                int amountOfUnitsToCreate = 1;
 
                 /*
                  * Instead of breaking normal program executions, I think it makes more sense to continue
@@ -87,12 +90,21 @@ public class CSVFileHandler {
                 if (unitHealth < 1)
                     continue;
 
+                /* Attempt to parse amount of units. This field being blank is valid, and in this case we create 1 unit. */
+                if (split.length == 4) {
+                    try {
+                        amountOfUnitsToCreate = Integer.parseInt(split[3].trim());
+                        if (amountOfUnitsToCreate < 1)
+                            amountOfUnitsToCreate = 1;
+                    } catch (Exception ignored) {}
+                }
+
                 /*
                  * Thrown exception is dealt with as described in javadoc.
                  * It would be advantageous to inform the user that an error occurred.
                  */
                 try {
-                    army.addUnit(UnitFactory.buildUnit(unitType, unitName, unitHealth));
+                    army.addAllUnits(UnitFactory.buildUnits(unitType, unitName, unitHealth, amountOfUnitsToCreate));
                 } catch (IllegalArgumentException ignored) {}
             }
         }

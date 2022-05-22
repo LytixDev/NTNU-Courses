@@ -1,7 +1,7 @@
 package edu.ntnu.idatt2001.nicolahb.gui.controllers;
 
 import edu.ntnu.idatt2001.nicolahb.Army;
-import edu.ntnu.idatt2001.nicolahb.filehandling.CSVFileHandler;
+import edu.ntnu.idatt2001.nicolahb.filehandling.ArmyFileHandler;
 import edu.ntnu.idatt2001.nicolahb.gui.App;
 import edu.ntnu.idatt2001.nicolahb.gui.models.ArmyObservableWrapper;
 import edu.ntnu.idatt2001.nicolahb.gui.models.DataHolderSingleton;
@@ -49,6 +49,9 @@ public class CreateArmyController implements Initializable {
 
     @FXML
     private ListView<Unit> viewOfArmy;
+
+    /* Instance of the DataHolderSingleton */
+    private final DataHolderSingleton data = DataHolderSingleton.getDataHolderSingleton();
 
     /**
      * Attempts to add units to the temporary army given the input the user has typed in.
@@ -114,9 +117,9 @@ public class CreateArmyController implements Initializable {
                 "Army Two");
 
         if (rc)
-            DataHolderSingleton.setArmyOne(tmpArmy.deepCopy());
+            data.setArmyOne(tmpArmy.deepCopy());
         else
-            DataHolderSingleton.setArmyTwo(tmpArmy.deepCopy());
+            data.setArmyTwo(tmpArmy.deepCopy());
     }
 
     /**
@@ -154,7 +157,7 @@ public class CreateArmyController implements Initializable {
         tmpArmy.setName(armyNameField.getText());
         try {
             String placeToSave = saveFile(App.getStage(), tmpArmy.getName() + ".csv");
-            CSVFileHandler.writeArmyData(tmpArmy, placeToSave);
+            ArmyFileHandler.writeArmyData(tmpArmy, placeToSave);
         } catch (Exception e) {
             promptErrorMessage("Could not save army to file. Error caused by " + e.getCause() +
                     ". Error message: " + e.getMessage());

@@ -1,6 +1,7 @@
 package edu.ntnu.idatt2001.nicolahb;
 
 import edu.ntnu.idatt2001.nicolahb.exceptions.SimulationAlreadyRanException;
+import edu.ntnu.idatt2001.nicolahb.gui.models.Logger;
 import edu.ntnu.idatt2001.nicolahb.units.InfantryUnit;
 import edu.ntnu.idatt2001.nicolahb.units.Unit;
 import org.junit.jupiter.api.Nested;
@@ -100,6 +101,24 @@ public class BattleBetweenTwoArmiesTest {
                 assertTrue(true);
             }
         }
+
+        /* This method cannot be tested as it requires JAVAFX to run, but we can tell
+           visually during program execution that the log works.
+
+        @Test
+        public void attackAddsInformationToLog() {
+            prepareTest();
+            Battle battle = new Battle(armyOne, armyTwo, TerrainType.NEUTRAL);
+            Logger<String> log = new Logger<>();
+            try {
+                battle.simulateSingleStepGUI(log);
+            } catch (Exception e) {
+                fail();
+            }
+
+            assertFalse(log.getLog().isEmpty());
+        }
+         */
     }
 
     @Nested
@@ -137,4 +156,5 @@ public class BattleBetweenTwoArmiesTest {
         }
 
     }
+
 }

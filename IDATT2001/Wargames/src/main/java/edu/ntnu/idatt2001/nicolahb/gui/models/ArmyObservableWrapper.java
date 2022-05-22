@@ -14,22 +14,37 @@ import javafx.collections.ObservableList;
  * pattern, and so there will naturally be some unavoidable coupling here.
  *
  * @author Nicolai H. Brand.
- * @version 19.05.2022.
+ * @version 21.05.2022.
  */
 public class ArmyObservableWrapper {
-
     private Army army;
-    private final StringProperty name = new SimpleStringProperty("None");
-    private final StringProperty totalUnits = new SimpleStringProperty("None");
-    private final StringProperty totalCavalryUnits = new SimpleStringProperty("None");
-    private final StringProperty totalCommanderUnits = new SimpleStringProperty("None");
-    private final StringProperty totalInfantryUnits = new SimpleStringProperty("None");
-    private final StringProperty totalRangedUnits = new SimpleStringProperty("None");
-    private final StringProperty avgHealth = new SimpleStringProperty("None");
-    private final StringProperty avgAttack = new SimpleStringProperty("None");
-    private final StringProperty avgArmor = new SimpleStringProperty("None");
-    private ObservableList<Unit> units = FXCollections.observableArrayList();
+    private final StringProperty name;
+    private final StringProperty totalUnits;
+    private final StringProperty totalCavalryUnits;
+    private final StringProperty totalCommanderUnits;
+    private final StringProperty totalInfantryUnits;
+    private final StringProperty totalRangedUnits;
+    private final StringProperty avgHealth;
+    private final StringProperty avgAttack;
+    private final StringProperty avgArmor;
+    private final ObservableList<Unit> units;
 
+    /**
+     * Instantiates a new Army observable wrapper and sets the army to null.
+     */
+    public ArmyObservableWrapper() {
+        this.army = null;
+        name = new SimpleStringProperty("None");
+        totalUnits = new SimpleStringProperty("None");
+        totalCavalryUnits = new SimpleStringProperty("None");
+        totalCommanderUnits = new SimpleStringProperty("None");
+        totalInfantryUnits = new SimpleStringProperty("None");
+        totalRangedUnits = new SimpleStringProperty("None");
+        avgHealth = new SimpleStringProperty("None");
+        avgAttack = new SimpleStringProperty("None");
+        avgArmor = new SimpleStringProperty("None");
+        units = FXCollections.observableArrayList();
+    }
 
     /**
      * Instantiates a new Army observable wrapper.
@@ -37,15 +52,9 @@ public class ArmyObservableWrapper {
      * @param army, the army to be made observable.
      */
     public ArmyObservableWrapper(Army army)  {
+        this();
         this.army = army;
         updateObservableFields();
-    }
-
-    /**
-     * Instantiates a new Army observable wrapper and sets the army to null.
-     */
-    public ArmyObservableWrapper() {
-        this.army = null;
     }
 
     /**

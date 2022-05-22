@@ -11,11 +11,11 @@ import java.util.Random;
  * Class Battle
  * Purpose of the class is to simulate a battle between two armies consisting of multiple units.
  * @author Nicolai Brand.
- * @version 18.05.2022
+ * @version 20.05.2022
  */
 public class Battle {
-    private Army armyOne;
-    private Army armyTwo;
+    private final Army armyOne;
+    private final Army armyTwo;
     private final TerrainType terrainType;
     private boolean hasRun = false;
 
@@ -44,16 +44,24 @@ public class Battle {
         if (hasRun) throw new SimulationAlreadyRanException("Simulation has already run");
 
         while (armyOne.hasUnits() && armyTwo.hasUnits()) {
-            simulateAttackGUI();
+            simulateSingleAttack();
         }
 
         this.hasRun = true;
         return armyOne.hasUnits() ? armyOne : armyTwo;
     }
 
-    public Army simulateStep() throws SimulationAlreadyRanException {
+    /**
+     * Specialized method to simulate one step of a battle.
+     * Makes one attack of the simulation, and then ends.
+     * Only meant to be used in a GUI application.
+     * @param log Logger, the log to append information about the attack.
+     * @return Army, the winning army. Null if there is no winning army.
+     * @throws SimulationAlreadyRanException if the simulation has already ran.
+     */
+    public Army simulateSingleStepGUI(Logger<String> log) throws SimulationAlreadyRanException {
         if (hasRun) throw new SimulationAlreadyRanException("Simulation has already run");
-        simulateAttackGUI();
+        simulateSingleAttackGUI(log);
 
         if (!armyOne.hasUnits()) {
             this.hasRun = true;
@@ -68,24 +76,12 @@ public class Battle {
         return null;
     }
 
-    public Army simulateStep(Logger log) throws SimulationAlreadyRanException {
-        if (hasRun) throw new SimulationAlreadyRanException("Simulation has already run");
-        simulateAttackGUI(log);
-
-        if (!armyOne.hasUnits()) {
-            this.hasRun = true;
-            return armyTwo;
-        }
-        if (!armyTwo.hasUnits()) {
-            this.hasRun = true;
-            return armyOne;
-        }
-
-        /* No winner yet, so return null */
-        return null;
-    }
-
-    private void simulateAttackGUI() {
+    /**
+     * Simulates one attack between two units from the two armies in the battle.
+     * If the defending unit has health zero or less, then this unit will become "dead"
+     * and removed from its corresponding army.
+     */
+    private void simulateSingleAttack() {
         Unit unitOne = armyOne.getRandom();
         Unit unitTwo = armyTwo.getRandom();
 
@@ -95,19 +91,19 @@ public class Battle {
             unitOne.attack(unitTwo, terrainType);
             if (unitTwo.getHealth() <= 0)
                 armyTwo.remove(unitTwo);
+
         } else {
             unitTwo.attack(unitOne, terrainType);
             if (unitOne.getHealth() <= 0)
                 armyOne.remove(unitOne);
         }
     }
-
     /**
      * Specialized method meant to be called from a JAVAFX application.
      * Might not be called from the main application thread.
-     * @param log
+     * @param log Logger, the log to add information about the attack on.
      */
-    private void simulateAttackGUI(Logger log) {
+    private void simulateSingleAttackGUI(Logger<String> log) {
         Unit unitOne = armyOne.getRandom();
         Unit unitTwo = armyTwo.getRandom();
 
@@ -121,16 +117,20 @@ public class Battle {
             Platform.runLater(() -> log.addLogItem(unitOne.getName() + " attacked " + unitTwo.getName() +
                     " for " + unitOne.calculateAttackDamage(unitTwo, terrainType) + " damage"));
 
-            if (unitTwo.getHealth() <= 0)
+            if (unitTwo.getHealth() <= 0) {
+                Platform.runLater(() -> log.addLogItem(unitTwo.getName() + " died"));
                 armyTwo.remove(unitTwo);
+            }
 
         } else {
             unitTwo.attack(unitOne, terrainType);
             Platform.runLater(() -> log.addLogItem(unitTwo.getName() + " attacked " + unitOne.getName() +
                     " for " + unitTwo.calculateAttackDamage(unitOne, terrainType) + " damage"));
 
-            if (unitOne.getHealth() <= 0)
+            if (unitOne.getHealth() <= 0) {
+                Platform.runLater(() -> log.addLogItem(unitOne.getName() + " died"));
                 armyOne.remove(unitOne);
+            }
         }
     }
 }

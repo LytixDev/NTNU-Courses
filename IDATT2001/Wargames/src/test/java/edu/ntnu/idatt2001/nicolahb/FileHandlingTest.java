@@ -1,7 +1,7 @@
 package edu.ntnu.idatt2001.nicolahb;
 
 import edu.ntnu.idatt2001.nicolahb.exceptions.CorruptedArmyFileException;
-import edu.ntnu.idatt2001.nicolahb.filehandling.CSVFileHandler;
+import edu.ntnu.idatt2001.nicolahb.filehandling.ArmyFileHandler;
 import edu.ntnu.idatt2001.nicolahb.units.InfantryUnit;
 import edu.ntnu.idatt2001.nicolahb.units.RangedUnit;
 import edu.ntnu.idatt2001.nicolahb.units.Unit;
@@ -44,8 +44,8 @@ public class FileHandlingTest {
                 filePath = "test_army.csv";
 
             try {
-                CSVFileHandler.writeArmyData(army, filePath);
-                Army parsedArmy = CSVFileHandler.parseArmy(filePath);
+                ArmyFileHandler.writeArmyData(army, filePath);
+                Army parsedArmy = ArmyFileHandler.parseArmy(filePath);
 
                 /*
                  * The parsedArmy will contain the same units as the army, but they will not be considered equal
@@ -109,7 +109,7 @@ public class FileHandlingTest {
             }
 
             try {
-                Army parsedArmy = CSVFileHandler.parseArmy(filePath);
+                Army parsedArmy = ArmyFileHandler.parseArmy(filePath);
                 assertNotEquals(2, parsedArmy.getUnits().size());
                 assertEquals(1, parsedArmy.getUnits().size());
             } catch (Exception e) {
@@ -136,7 +136,7 @@ public class FileHandlingTest {
             }
 
             try {
-                Army parsedArmy = CSVFileHandler.parseArmy(filePath);
+                Army parsedArmy = ArmyFileHandler.parseArmy(filePath);
                 assertEquals(1, parsedArmy.getUnits().size());
                 /* 'infantryUnit' is interpreted as 'InfantryUnit' */
                 assertTrue(parsedArmy.getUnits().get(0) instanceof InfantryUnit);
@@ -159,7 +159,7 @@ public class FileHandlingTest {
             }
 
             try {
-                Army parsedArmy = CSVFileHandler.parseArmy(filePath);
+                Army parsedArmy = ArmyFileHandler.parseArmy(filePath);
                 assertNotEquals(0, parsedArmy.getUnits().size());
                 assertTrue(parsedArmy.getInfantryUnits().get(0).equalFields(new InfantryUnit("Name", 10)));
             } catch (Exception e) {
@@ -186,7 +186,7 @@ public class FileHandlingTest {
             }
 
             try {
-                Army parsedArmy = CSVFileHandler.parseArmy(filePath);
+                Army parsedArmy = ArmyFileHandler.parseArmy(filePath);
                 fail();
             } catch (CorruptedArmyFileException e) {
                 /* We expect this exceptions in particular to be thrown */
@@ -220,7 +220,7 @@ public class FileHandlingTest {
             }
 
             try {
-                Army army = CSVFileHandler.parseArmy(filePath);
+                Army army = ArmyFileHandler.parseArmy(filePath);
                 assertFalse(army.hasUnits());
             } catch (Exception e) {
                 fail();
@@ -232,11 +232,57 @@ public class FileHandlingTest {
         @Test
         public void parsingFileThatDoesntExistThrowsError() {
             try {
-                Army parsedArmy = CSVFileHandler.parseArmy("/bin/i_do_not_exist.csv");
+                Army parsedArmy = ArmyFileHandler.parseArmy("/bin/i_do_not_exist.csv");
                 fail("Parsed army that does not exist, when it should have throwed an error");
             } catch (Exception e) {
                 assertTrue(e instanceof FileNotFoundException);
             }
+        }
+    }
+
+    @Nested
+    public class ParsingFileWithFourthValue {
+
+        String filePath;
+
+        private void prepareTest() {
+            if (System.getProperty("os.name").equals("Linux"))
+                filePath = "/tmp/test_army.csv";
+            else
+                filePath = "test_army.csv";
+        }
+
+        private void endTest() {
+            /* Clean up file made from test */
+            File file = new File(filePath);
+            file.delete();
+        }
+
+        @Test
+        public void armyWithFourthValueInLineCreatesExpectedAmountOfUnits() {
+            /* Here we will use the feature that the fourth value in a line codes to the amount of units of that type to create */
+            prepareTest();
+            try (FileWriter fw = new FileWriter(filePath)) {
+                /* Expect 30 commanderunits with health 10 to be created */
+                fw.write("Name\n");
+                fw.write("CommanderUnit,Name,10,30\n");
+                /* Expect one infantry unit to be created */
+                fw.write("InfantryUnit,Name,10,NaN");
+
+            } catch (IOException e) {
+                fail();
+            }
+
+            try {
+                Army army = ArmyFileHandler.parseArmy(filePath);
+
+                assertEquals(31, army.getUnits().size());
+                assertEquals(30, army.getCommanderUnits().size());
+                assertEquals(1, army.getInfantryUnits().size());
+            } catch (Exception e) {
+                fail();
+            }
+            endTest();
         }
     }
 }

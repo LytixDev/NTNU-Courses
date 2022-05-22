@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
  * Two armies fight each other.
  *
  * @author Nicolai Brand
- * @version 16.05.2022
+ * @version 21.05.2022
  */
 public class Army {
     private String name;
-    private ArrayList<Unit> units;
+    private final ArrayList<Unit> units;
 
     /**
      * Default constructor
@@ -40,10 +40,10 @@ public class Army {
      * @param units the units
      * @throws IllegalArgumentException the illegal argument exception
      */
-    public Army(String name, ArrayList<Unit> units) throws IllegalArgumentException {
+    public Army(String name, List<Unit> units) throws IllegalArgumentException {
         if (name.isBlank()) throw new IllegalArgumentException("Name can't be empty");
         this.name = name;
-        this.units = units;
+        this.units = (ArrayList<Unit>) units;
     }
 
     /**
@@ -178,20 +178,21 @@ public class Army {
      *
      * @return units, ArrayList<Unit>.
      */
-    public ArrayList<Unit> getUnits() {
+    public List<Unit> getUnits() {
         return units;
     }
 
 
     /**
-     * Creates a String representation of the instance of the class that is comma separated.
+     * Creates a String representation of the instance of the class that is value separated.
+     * @param delimiter, the String to separate values by.
      * @return String, String representation of the class in a csv format.
      */
-    public String csvRepresentation() {
+    public String dataRepresentation(String delimiter) {
         /* Strings in Java are supposed to be immutable, so StringBuilder is used */
         StringBuilder out = new StringBuilder();
         out.append(name).append("\n");
-        units.forEach(unit -> out.append(unit.csvRepresentation()));
+        units.forEach(unit -> out.append(unit.dataRepresentation(delimiter)));
         return out.toString();
     }
 
@@ -228,14 +229,5 @@ public class Army {
         if (o == null || getClass() != o.getClass()) return false;
         Army army = (Army) o;
         return Objects.equals(name, army.name) && Objects.equals(units, army.units);
-    }
-
-    /**
-     * Generates a hash code for the object.
-     * @return int, hash code.
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, units);
     }
 }

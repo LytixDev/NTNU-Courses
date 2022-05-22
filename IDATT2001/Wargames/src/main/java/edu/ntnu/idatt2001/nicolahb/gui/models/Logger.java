@@ -12,12 +12,12 @@ import javafx.collections.ObservableList;
  * easily update when a new item is added to the log.
  *
  * @author Nicolai H. Brand.
- * @version 19.05.2022.
+ * @version 20.05.2022.
  */
-public class Logger {
-    ObservableList<String> log;
+public class Logger<T> {
+    private final ObservableList<T> log;
     /* Will add new log items to index 0 of the array if reverse flag is set to true */
-    final boolean REVERSE_FLAG;
+    private final boolean REVERSE_FLAG;
 
     /**
      * Constructor for Logger.
@@ -41,9 +41,9 @@ public class Logger {
     /**
      * Add a log item to the list.
      *
-     * @param item String, the new item to be added to the log.
+     * @param item T, the new item to be added to the log.
      */
-    public void addLogItem(String item) {
+    public void addLogItem(T item) {
         if (REVERSE_FLAG)
             log.add(0, item);
         else
@@ -59,7 +59,7 @@ public class Logger {
     }
 
     // getter
-    public ObservableList<String> getLog() {
+    public ObservableList<T> getLog() {
         return log;
     }
 }

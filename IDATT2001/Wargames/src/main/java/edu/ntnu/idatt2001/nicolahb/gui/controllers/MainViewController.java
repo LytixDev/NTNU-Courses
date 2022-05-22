@@ -17,7 +17,7 @@ import java.util.ResourceBundle;
  * This will be the first Controller to be loaded as the main.fxml view is loaded on startup.
  *
  * @author Nicolai H. Brand.
- * @version 19.05.2022.
+ * @version 20.05.2022.
  */
 public class MainViewController implements Initializable {
     @FXML
@@ -43,7 +43,10 @@ public class MainViewController implements Initializable {
     @FXML
     private Spinner<Double> speedSpinner;
 
-    SpinnerValueFactory<Double> valueFactorySpeed;
+    private SpinnerValueFactory<Double> valueFactorySpeed;
+
+    /* Instance of the DataHolderSingleton */
+    private final DataHolderSingleton data = DataHolderSingleton.getDataHolderSingleton();
 
     /**
      * Attempts to load an army as the first army.
@@ -51,7 +54,7 @@ public class MainViewController implements Initializable {
      */
     @FXML
     void loadArmyOne() {
-        DataHolderSingleton.loadArmy(1);
+        data.loadArmy(1);
 
         /* Enable buttons if all is loaded correctly */
         if (armyTwoName.textProperty().getValue() != null) {
@@ -63,11 +66,11 @@ public class MainViewController implements Initializable {
 
     /**
      * Attempts to load an army as the second army.
-     * Business logic handled by the DataHolderSingleton class.
+     * Business logic handled by the data class.
      */
     @FXML
     void loadArmyTwo() {
-        DataHolderSingleton.loadArmy(2);
+        data.loadArmy(2);
 
         /* Enable buttons if all is loaded correctly */
         if (armyOneName.textProperty().getValue() != null) {
@@ -88,61 +91,61 @@ public class MainViewController implements Initializable {
     /**
      * Resets the simulation.
      * Reloads the previously loaded armies into memory.
-     * Business logic handled by DataHolderSingleton's resetBattle() method.
+     * Business logic handled by data's resetBattle() method.
      */
     @FXML
     void resetSimulatorBtn() {
-        DataHolderSingleton.resetBattle();
+        data.resetBattle();
         disableButtons();
     }
 
     /**
      * Starts the simulation between two loaded armies.
-     * Business logic handled by DataHolderSingleton's startBattle() method.
+     * Business logic handled by data's startBattle() method.
      */
     @FXML
     void startSimulationBtn() {
-        DataHolderSingleton.startBattle(terrainBox.getValue());
+        data.startBattle(terrainBox.getValue());
         startBtn.setDisable(true);
     }
 
     /**
      * Binds all the observer fields in the GUI to their corresponding observable fields in
-     * the DataHolderSingleton.
+     * the data.
      */
     public void bindObserverFields() {
-        armyOneFileName.textProperty().bind(DataHolderSingleton.getArmyOnePath());
-        armyTwoFileName.textProperty().bind(DataHolderSingleton.getArmyTwoPath());
-        winningArmyName.textProperty().bind(DataHolderSingleton.getWinningArmy());
+        armyOneFileName.textProperty().bind(data.getArmyOnePath());
+        armyTwoFileName.textProperty().bind(data.getArmyTwoPath());
+        winningArmyName.textProperty().bind(data.getWinningArmy());
 
         /* bind dependant army fields */
-        armyOneName.textProperty().bind(DataHolderSingleton.getArmyOne().getName());
-        tUnits1.textProperty().bind(DataHolderSingleton.getArmyOne().getTotalUnits());
-        cavUnits1.textProperty().bind(DataHolderSingleton.getArmyOne().getTotalCavalryUnits());
-        comUnits1.textProperty().bind(DataHolderSingleton.getArmyOne().getTotalCommanderUnits());
-        infUnits1.textProperty().bind(DataHolderSingleton.getArmyOne().getTotalInfantryUnits());
-        ranUnits1.textProperty().bind(DataHolderSingleton.getArmyOne().getTotalRangedUnits());
-        health1.textProperty().bind(DataHolderSingleton.getArmyOne().getAvgHealth());
-        attack1.textProperty().bind(DataHolderSingleton.getArmyOne().getAvgAttack());
-        armor1.textProperty().bind(DataHolderSingleton.getArmyOne().getAvgArmor());
+        armyOneName.textProperty().bind(data.getArmyOne().getName());
+        tUnits1.textProperty().bind(data.getArmyOne().getTotalUnits());
+        cavUnits1.textProperty().bind(data.getArmyOne().getTotalCavalryUnits());
+        comUnits1.textProperty().bind(data.getArmyOne().getTotalCommanderUnits());
+        infUnits1.textProperty().bind(data.getArmyOne().getTotalInfantryUnits());
+        ranUnits1.textProperty().bind(data.getArmyOne().getTotalRangedUnits());
+        health1.textProperty().bind(data.getArmyOne().getAvgHealth());
+        attack1.textProperty().bind(data.getArmyOne().getAvgAttack());
+        armor1.textProperty().bind(data.getArmyOne().getAvgArmor());
 
-        armyTwoName.textProperty().bind(DataHolderSingleton.getArmyTwo().getName());
-        tUnits2.textProperty().bind(DataHolderSingleton.getArmyTwo().getTotalUnits());
-        cavUnits2.textProperty().bind(DataHolderSingleton.getArmyTwo().getTotalCavalryUnits());
-        comUnits2.textProperty().bind(DataHolderSingleton.getArmyTwo().getTotalCommanderUnits());
-        infUnits2.textProperty().bind(DataHolderSingleton.getArmyTwo().getTotalInfantryUnits());
-        ranUnits2.textProperty().bind(DataHolderSingleton.getArmyTwo().getTotalRangedUnits());
-        health2.textProperty().bind(DataHolderSingleton.getArmyTwo().getAvgHealth());
-        attack2.textProperty().bind(DataHolderSingleton.getArmyTwo().getAvgAttack());
-        armor2.textProperty().bind(DataHolderSingleton.getArmyTwo().getAvgArmor());
+        armyTwoName.textProperty().bind(data.getArmyTwo().getName());
+        tUnits2.textProperty().bind(data.getArmyTwo().getTotalUnits());
+        cavUnits2.textProperty().bind(data.getArmyTwo().getTotalCavalryUnits());
+        comUnits2.textProperty().bind(data.getArmyTwo().getTotalCommanderUnits());
+        infUnits2.textProperty().bind(data.getArmyTwo().getTotalInfantryUnits());
+        ranUnits2.textProperty().bind(data.getArmyTwo().getTotalRangedUnits());
+        health2.textProperty().bind(data.getArmyTwo().getAvgHealth());
+        attack2.textProperty().bind(data.getArmyTwo().getAvgAttack());
+        armor2.textProperty().bind(data.getArmyTwo().getAvgArmor());
 
-        simulationLogList.setItems(DataHolderSingleton.getBattleLog());
+        simulationLogList.setItems(data.getBattleLog());
 
-        armyOneScore.textProperty().bind(DataHolderSingleton.getArmyOneScore());
-        armyTwoScore.textProperty().bind(DataHolderSingleton.getArmyTwoScore());
+        armyOneScore.textProperty().bind(data.getArmyOneScore());
+        armyTwoScore.textProperty().bind(data.getArmyTwoScore());
 
-        armyOneList.setItems(DataHolderSingleton.getArmyOne().getUnits());
-        armyTwoList.setItems(DataHolderSingleton.getArmyTwo().getUnits());
+        armyOneList.setItems(data.getArmyOne().getUnits());
+        armyTwoList.setItems(data.getArmyTwo().getUnits());
     }
 
     /**
@@ -186,7 +189,7 @@ public class MainViewController implements Initializable {
         });
 
         /* Disable all buttons apart from reload when simulation is already running */
-        DataHolderSingleton.getIsSimulating().addListener((observable, ignored, newValue) -> {
+        data.getIsSimulating().addListener((observable, ignored, newValue) -> {
             loadArmyOneBtn.setDisable(newValue);
             loadArmyTwoBtn.setDisable(newValue);
             createArmyBtn.setDisable(newValue);
@@ -203,7 +206,7 @@ public class MainViewController implements Initializable {
         /* init spinner */
         valueFactorySpeed = new SpinnerValueFactory.DoubleSpinnerValueFactory(0.25, 10.0, 1.0, 0.25);
         speedSpinner.setValueFactory(valueFactorySpeed);
-        speedSpinner.valueProperty().addListener((observable, ignored, newValue) -> DataHolderSingleton.setBattleDelay(newValue));
+        speedSpinner.valueProperty().addListener((observable, ignored, newValue) -> data.setBattleDelay(newValue));
 
         /* collapse titled-panes with collapse ID */
         titledPaneCollapse.setExpanded(false);

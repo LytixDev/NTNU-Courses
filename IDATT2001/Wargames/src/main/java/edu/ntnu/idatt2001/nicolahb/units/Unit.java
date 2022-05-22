@@ -9,7 +9,7 @@ import java.util.Objects;
  * Unit abstract class.
  * The unit class serves as an abstract for all subsequent units.
  * @author Nicolai H. Brand
- * @version 07.05.2022
+ * @version 21.05.2022
  */
 abstract public class Unit {
     private final String name;
@@ -107,16 +107,17 @@ abstract public class Unit {
     }
 
     /**
-     * Formats the data of the specific instance of Unit class on the format:
+     * Formats the data of the specific instance of Unit class on the format (using ',' as the delimiter):
      * "unit type,unit name,unit health"
      * This is used when writing to file
+     * @param  delimiter, the String/char to separate on.
      * @return String, String representation of the object
      */
-    public String csvRepresentation() {
+    public String dataRepresentation(String delimiter) {
         return this.getClass().getSimpleName() +
-                "," +
+                delimiter +
                 name +
-                "," +
+                delimiter +
                 health +
                 "\n";
     }

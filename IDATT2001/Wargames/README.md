@@ -15,11 +15,11 @@
 
 ## filformat til en armé
 
-Arméer er lagret som en komma-separert-textsfil på formatet:
+Arméer er lagret som en verdi-separert-textsfil. Komma blir brukt som default separator. Eksempel:
 
 Navn på arméen
 
-Type unit,navn,helse
+Type unit,navn,helse,antall
 
 --------
 
@@ -27,6 +27,9 @@ Eksempel:
 
 My Army
 
-RangedUnit,Archer,10
+RangedUnit,Archer,10,5
 
 CommanderUnit,Chief,50
+
+
+Er det ikke spesifisert et antall blir det opprettet én enhet.
