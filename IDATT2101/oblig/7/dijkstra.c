@@ -5,44 +5,68 @@
 #include <stdbool.h>    // bool type
 #include <string.h>     // memset
 
+//#define MEMORY_LEAK_TEST
+#ifdef MEMORY_LEAK_TEST
+#define MDC_IMPLEMENTATION
+#include "mdc/mdc.h"    // https://github.com/LytixDev/mdc
+#endif
+
+
+/* compares priority of items in heapqueue. E.I: is a > b ? */
+typedef bool (compare_func)(void *a, void *b);
 
 /* min-heap queue inspired by: https://docs.python.org/3/library/heapq.html */
 struct heapq_t {
-    struct node_t **items; 
+    void **items; 
     int size;
     int capacity;
+    compare_func *cmp;
 };
 
-struct node_t {
-    int index;
+struct edge_t {
+    /* index/value/identifer of the node */
+    int from_idx;       // superflous in this implementation
+    int to_idx;
     int cost;
-    struct node_t *next;
+    struct edge_t *next;
 };
 
-/* 
- * ad-hoc datastructure to store information given by performing dijkstra 
- */
-struct shortest_path {
-    int total_cost;
-    int previous_index;
-};
-
-/* 
- * graphs are repsented as a "neighbour list".
- * every node has an index in a regular array where
- * the corresponding value is the first node of a
- * linked list
- */
 struct graph_t {
-    struct node_t **nodes;
+    /*
+     * every node has a linked list of edges.
+     * the value at the index of the neighbour_list is the head of the linked list of edges.
+     *
+     * example:
+     * [0]      -> edge -> edge -> edge
+     * [1]      -> edge
+     * [2]      -> NULL
+     * [3]      -> edge -> edge
+     * ...
+     * [i]
+     */
+    struct edge_t **neighbour_list;
     int node_count;
     int edge_count;
 };
 
+/* node info used in the queue when performing dijkstra */
+struct node_info {
+    int node_idx;
+    int cost_from_start_node;
+};
+
+/* ad-hoc datastructure to store information given by performing dijkstra */
+struct shortest_path {
+    int previous_idx;
+    int total_cost;
+};
 
 #define HEAPQ_STARTING_CAPACITY 32
 #define ERROR_EOF -1
 #define INF (1 << 30)
+
+#define NODE_UNVISITED -1
+#define NODE_START -2
 
 #define heapq_left_child_idx(parent_idx) (parent_idx * 2 + 1)
 #define heapq_right_child_idx(parent_idx) (parent_idx * 2 + 2)
@@ -52,24 +76,25 @@ struct graph_t {
 #define heapq_has_right(idx, size) (heapq_right_child_idx(idx) < size)
 
 
-static inline int heapq_left_child(struct heapq_t *hq, int idx)
+/* ---------- heap functions ---------- */
+static inline void *heapq_left_child(struct heapq_t *hq, int idx)
 {
-    return hq->items[heapq_left_child_idx(idx)]->cost;
+    return hq->items[heapq_left_child_idx(idx)];
 }
 
-static inline int heapq_right_child(struct heapq_t *hq, int idx)
+static inline void *heapq_right_child(struct heapq_t *hq, int idx)
 {
-    return hq->items[heapq_right_child_idx(idx)]->cost;
+    return hq->items[heapq_right_child_idx(idx)];
 }
 
-static inline int heapq_parent(struct heapq_t *hq, int idx)
+static inline void *heapq_parent(struct heapq_t *hq, int idx)
 {
-    return hq->items[heapq_parent_idx(idx)]->cost;
+    return hq->items[heapq_parent_idx(idx)];
 }
 
 static void swap(struct heapq_t *hq, int a, int b)
 {
-    struct node_t *tmp = hq->items[a];
+    void *tmp = hq->items[a];
     hq->items[a] = hq->items[b];
     hq->items[b] = tmp;
 }
@@ -78,7 +103,7 @@ static void ensure_capacity(struct heapq_t *hq)
 {
     if (hq->size == hq->capacity) {
         hq->capacity *= 2;
-        hq->items = realloc(hq->items, hq->capacity * sizeof(struct node_t *));
+        hq->items = realloc(hq->items, hq->capacity * sizeof(void *));
     }
 }
 
@@ -87,7 +112,8 @@ static void heapify_up(struct heapq_t *hq)
     int idx = hq->size - 1;
     int parent_idx = heapq_parent_idx(idx);
     /* keep "repearing" heap as long as parent is greater than child */
-    while (parent_idx >= 0 && hq->items[parent_idx]->cost > hq->items[idx]->cost) {
+    //while (parent_idx >= 0 && hq->items[parent_idx]->cost > hq->items[idx]->cost) {
+    while (parent_idx >= 0 && hq->cmp(hq->items[parent_idx], hq->items[idx])) {
         swap(hq, parent_idx, idx);
         /* walk upwards */
         idx = heapq_parent_idx(idx);
@@ -101,10 +127,12 @@ static void heapify_down(struct heapq_t *hq)
     int min_idx;
     while (heapq_has_left(idx, hq->size)) {
         min_idx = heapq_left_child_idx(idx);
-        if (heapq_has_right(idx, hq->size) && heapq_right_child(hq, idx) < hq->items[min_idx]->cost)
+        if (heapq_has_right(idx, hq->size) && hq->cmp(hq->items[min_idx], 
+                                                      heapq_right_child(hq, idx)))
             min_idx = heapq_right_child_idx(idx);
 
-        if (hq->items[idx]->cost < hq->items[min_idx]->cost) {
+        //if (hq->items[idx]->cost < hq->items[min_idx]->cost) {
+        if (hq->cmp(hq->items[min_idx], hq->items[idx])) {
             break;
         } else {
             swap(hq, idx, min_idx);
@@ -113,7 +141,7 @@ static void heapify_down(struct heapq_t *hq)
     }
 }
 
-struct node_t *heapq_get(struct heapq_t *hq, int idx)
+void *heapq_get(struct heapq_t *hq, int idx)
 {
     if (idx < 0 || idx >= hq->size)
         return NULL;
@@ -121,7 +149,7 @@ struct node_t *heapq_get(struct heapq_t *hq, int idx)
     return hq->items[idx];
 }
 
-struct node_t *heapq_pop(struct heapq_t *hq)
+void *heapq_pop(struct heapq_t *hq)
 {
     struct node_t *item = heapq_get(hq, 0);
     if (item == NULL)
@@ -132,23 +160,19 @@ struct node_t *heapq_pop(struct heapq_t *hq)
     return item;
 }
 
-void heapq_push(struct heapq_t *hq, int node_idx, int total_cost)
+void heapq_push(struct heapq_t *hq, void *item)
 {
     ensure_capacity(hq);
-    struct node_t *item = malloc(sizeof(struct node_t));
-    item->index = node_idx;
-    item->cost = total_cost;
     hq->items[hq->size++] = item;
     heapify_up(hq);
 }
 
-struct heapq_t *heapq_malloc()
+void heapq_push_node(struct heapq_t *hq, int node, int cost_from_start_node)
 {
-    struct heapq_t *hq = malloc(sizeof(struct heapq_t));
-    hq->size = 0;
-    hq->capacity = HEAPQ_STARTING_CAPACITY;
-    hq->items = malloc(HEAPQ_STARTING_CAPACITY * sizeof(struct node_t *));
-    return hq;
+    struct node_info *ni = malloc(sizeof(struct node_info));
+    ni->node_idx = node;
+    ni->cost_from_start_node = cost_from_start_node;
+    heapq_push(hq, ni);
 }
 
 void heapq_free(struct heapq_t *hq)
@@ -157,17 +181,46 @@ void heapq_free(struct heapq_t *hq)
     free(hq);
 }
 
-void heapq_print(struct heapq_t *hq)
+struct heapq_t *heapq_malloc(compare_func *cmp)
 {
-    for (int i = 0; i < hq->size; i++)
-        printf("(%d - %d)\n", hq->items[i]->index, hq->items[i]->cost);
-    putchar('\n');
+    struct heapq_t *hq = malloc(sizeof(struct heapq_t));
+    hq->size = 0;
+    hq->capacity = HEAPQ_STARTING_CAPACITY;
+    hq->items = malloc(HEAPQ_STARTING_CAPACITY * sizeof(void *));
+    hq->cmp = cmp;
+    return hq;
 }
 
-static int get_next_int(FILE *fp)
+bool compare(void *a, void *b)
+{
+    return ((struct node_info *)a)->cost_from_start_node >
+           ((struct node_info *)b)->cost_from_start_node;
+}
+
+/* ---------- graph functions ---------- */
+void graph_print(struct graph_t *graph)
+{
+    printf("total nodes: %d, total edges: %d.\n", graph->node_count, graph->edge_count);
+    printf("[node] list of all edges (to, cost).\n");
+
+    struct edge_t *edge_i;
+    for (int i = 0; i < graph->node_count; i++) {
+        printf("[%d] ", i);
+        edge_i = graph->neighbour_list[i];
+        while (edge_i != NULL) {
+            printf("(%d, %d) ", edge_i->to_idx, edge_i->cost);
+            edge_i = edge_i->next;
+        }
+        putchar('\n');
+    }
+    putchar('\n');
+
+}
+
+static int f_next_int(FILE *fp)
 {
     char ch;
-    char buf[128];
+    char buf[128] = {0};
     int i = 0;
 
     /* remove all leading whitespace */
@@ -201,135 +254,137 @@ static int get_next_int(FILE *fp)
     return atoi(buf);
 }
 
-void graph_free(struct graph_t *graph)
+static void graph_insert(struct graph_t *graph, int from_idx, int to_idx, int cost)
 {
-    struct node_t *node_i, *prev;
-    for (int i = 0; i < graph->node_count; i++) {
-        node_i = graph->nodes[i];
-        while (node_i != NULL) {
-            prev = node_i;
-            node_i = node_i->next;
-            free(prev);
-        }
-    }
-    free(graph->nodes);
-}
+    struct edge_t *edge = malloc(sizeof(struct edge_t));
+    edge->from_idx = from_idx;
+    edge->to_idx = to_idx;
+    edge->cost = cost;
+    edge->next = NULL;
 
-void graph_insert(struct graph_t *graph, int node_index, int edge_index, int cost)
-{
-    struct node_t *node = malloc(sizeof(struct node_t));
-    node->index = edge_index;
-    node->cost = cost;
-
-    struct node_t *head = graph->nodes[node_index];
+    struct edge_t *head = graph->neighbour_list[from_idx];
     if (head == NULL) {
-        graph->nodes[node_index] = node;
+        graph->neighbour_list[from_idx] = edge;
         return;
     }
 
     /* use new node as linkedlist head */
-    node->next = head;
-    graph->nodes[node_index] = node;
+    edge->next = head;
+    graph->neighbour_list[from_idx] = edge;
 }
 
-bool parse_file_into_graph(char *file_name, struct graph_t *graph)
+struct graph_t *parse_file_into_graph(char *file_name)
 {
-    char ch;
     FILE *fp;
     fp = fopen(file_name, "r");
     if (fp == NULL)
-        return true;
+        return NULL;
 
-    int node_count = get_next_int(fp);
-    int edge_count = get_next_int(fp);
+    char ch;
+    struct graph_t *graph = malloc(sizeof(struct graph_t));
 
-    graph->nodes = malloc(sizeof(struct node_t *) * node_count);;
+    int node_count = f_next_int(fp);
+    int edge_count = f_next_int(fp);
+
+    /* every node gets its own linked list of edges */
+    graph->neighbour_list = malloc(sizeof(struct edge_t *) * node_count);
+    /*
+     * pernicious bug!: forgetting to set freshly allocated pointers to NULL results in undefined
+     * behaviour and uninitialized data will creep in.
+     */
+    for (int i = 0; i < node_count; i++)
+        graph->neighbour_list[i] = NULL;
 
     while (1) {
-        int node_index = get_next_int(fp);
-        if (node_index == ERROR_EOF)
+        int from_idx = f_next_int(fp);
+        int to_idx = f_next_int(fp);
+        int cost = f_next_int(fp);
+        if (from_idx == ERROR_EOF || to_idx == ERROR_EOF || cost == ERROR_EOF)
             break;
-        int edge_index = get_next_int(fp);
-        int cost = get_next_int(fp);
-        graph_insert(graph, node_index, edge_index, cost);
+        graph_insert(graph, from_idx, to_idx, cost);
     }
 
     fclose(fp);
     graph->node_count = node_count;
     graph->edge_count = edge_count;
-    return false;
+    return graph;
 }
 
-void graph_print(struct graph_t *graph)
+void graph_free(struct graph_t *graph)
 {
-    printf("total nodes: %d, total edges: %d\n", graph->node_count, graph->edge_count);
-    printf("[node] (edge, cost)\n\n");
-
-    struct node_t *node_i;
+    struct edge_t *edge_i, *prev;
     for (int i = 0; i < graph->node_count; i++) {
-        printf("[%d] ", i);
-        node_i = graph->nodes[i];
-        while (node_i != NULL) {
-            printf("(%d - %d) ", node_i->index, node_i->cost);
-            node_i = node_i->next;
+        edge_i = graph->neighbour_list[i];
+        while (edge_i != NULL) {
+            prev = edge_i;
+            edge_i = edge_i->next;
+            free(prev);
         }
-        putchar('\n');
     }
-
+    free(graph->neighbour_list);
+    free(graph);
 }
 
 void shortest_path_print(struct shortest_path *sp, int node_count)
 {
-    printf("[node]  cost\t\t previous node.\n");
+    printf("[node] [previous node] [cost]\n");
     printf("-----------------------------------\n");
     for (int i = 0; i < node_count; i++) {
-        printf("[%d]\t", i);
-        if (sp[i].total_cost == INF) {
-            printf("UNREACHABLE\n");
+        printf("%d\t", i);
+        if (sp[i].previous_idx == NODE_START) {
+            printf("start\n");
+            continue;
+        } else if (sp[i].previous_idx == NODE_UNVISITED) {
+            printf("unreachable\n");
+            continue;
         } else {
-            printf("%d\t\t", sp[i].total_cost);
-            if (sp[i].previous_index != -1)
-                printf("%d\n", sp[i].previous_index);
-            else
-                printf("STARTING NODE\n");
+            printf("%d\t", sp[i].previous_idx);
         }
+
+        if (sp[i].total_cost == INF)
+            printf("ERROR: visited node has total_cost set to infinity\n");
+        else
+            printf("%d\n", sp[i].total_cost);
     }
 }
 
+/* ---------- dijsktra implementation ---------- */
 /* dijkstra's shortest path from a to all other nodes in the graph */
 struct shortest_path *dijkstra(struct graph_t *graph, int start_node)
 {
     bool visited[graph->node_count];
-    memset(visited, false, graph->node_count);
-    struct heapq_t *hq = heapq_malloc();
+    memset(visited, false, sizeof(bool) * graph->node_count);
+    struct heapq_t *hq = heapq_malloc(compare);
     struct shortest_path *sp = malloc(sizeof(struct shortest_path) * graph->node_count);
     /* set initial cost to be as large as possible */
-    for (int i = 0; i < graph->node_count; i++)
+    for (int i = 0; i < graph->node_count; i++) {
         sp[i].total_cost = INF;
+        sp[i].previous_idx = NODE_UNVISITED;
+    }
 
     sp[start_node].total_cost = 0;
-    sp[start_node].previous_index = -1;
-    heapq_push(hq, start_node, 0);
+    sp[start_node].previous_idx = NODE_START;
+    heapq_push_node(hq, start_node, 0);
 
-    struct node_t *neighbour;
-    struct node_t *node;
-    while ((node = heapq_pop(hq)) != NULL) {
-        visited[node->index] = true;
-        neighbour = graph->nodes[node->index];
+    struct edge_t *neighbour;
+    struct node_info *ni;
+    while ((ni = (struct node_info *)heapq_pop(hq)) != NULL) {
+        visited[ni->node_idx] = true;
+        neighbour = graph->neighbour_list[ni->node_idx];
 
         /* check all connected neighbours of the current node */
         while (neighbour != NULL) {
             /* if a node is already visited, we can't find a shorter path */
-            if (visited[neighbour->index]) {
+            if (visited[neighbour->to_idx]) {
                 neighbour = neighbour->next;
                 continue;
             }
-            int new_cost = sp[node->index].total_cost + neighbour->cost;
+            int new_cost = sp[ni->node_idx].total_cost + neighbour->cost;
             /* update shortest path is newly calculated cost is less than previously calcualted */
-            if (new_cost < sp[neighbour->index].total_cost) {
-                sp[neighbour->index].previous_index = node->index;
-                sp[neighbour->index].total_cost = new_cost;
-                heapq_push(hq, neighbour->index, new_cost);
+            if (new_cost < sp[neighbour->to_idx].total_cost) {
+                sp[neighbour->to_idx].previous_idx = ni->node_idx;
+                sp[neighbour->to_idx].total_cost = new_cost;
+                heapq_push_node(hq, neighbour->to_idx, new_cost);
             }
             neighbour = neighbour->next;
         }
@@ -337,7 +392,7 @@ struct shortest_path *dijkstra(struct graph_t *graph, int start_node)
          * why free? heapq_pop() returns a malloced node that would otherwise be lost if it was not
          * freed here 
          */
-        free(node);
+        free(ni);
     }
 
     heapq_free(hq);
@@ -346,31 +401,42 @@ struct shortest_path *dijkstra(struct graph_t *graph, int start_node)
 
 void do_dijkstra(char *file_name, int starting_node)
 {
-    struct graph_t graph;
     struct shortest_path *sp;
-    bool err = parse_file_into_graph(file_name, &graph);
-    if (err) {
+    struct graph_t *graph = parse_file_into_graph(file_name);
+    if (graph == NULL) {
         fprintf(stderr, "error: could not read file '%s'\n", file_name);
         exit(1);
     }
 
-    sp = dijkstra(&graph, starting_node);
-    shortest_path_print(sp, graph.node_count);
-    graph_free(&graph);
+#ifdef DEBUG
+    printf("Parsed file %s into graph:\n", file_name);
+    graph_print(graph);
+#endif
+
+    printf("Dijkstra's algorithm on file '%s' using %d as starting node.\n\n", file_name, 
+           starting_node);
+    sp = dijkstra(graph, starting_node);
+    shortest_path_print(sp, graph->node_count);
+    graph_free(graph);
     free(sp);
 }
 
 int main(int argc, char **argv)
 {
+#ifdef MEMORY_LEAK_TEST
+    mdc_init();
+#endif
+
     if (argc != 3) {
-        fprintf(stderr, "usage: first argument should be path to input file, and second should be\
-starting node\n");
-        fprintf(stderr, "example: dijkstra vg1 1");
+        fprintf(stderr, "usage: %s <path_to_input_file> <starting_node>\n", argv[0]);
+        fprintf(stderr, "example: %s vg1 1\n", argv[0]);
         exit(1);
     }
 
-    int starting_node = atoi(argv[2]);
-    printf("Dijkstra's algorithm on file '%s' using %d as starting node.\n\n", argv[1],
-           starting_node);
-    do_dijkstra(argv[1], starting_node);
+    do_dijkstra(argv[1], atoi(argv[2]));
+
+#ifdef MEMORY_LEAK_TEST
+    mdc_debug();
+    mdc_destroy();
+#endif
 }
