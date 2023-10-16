@@ -1,0 +1,3 @@
+pip3 install numpy matplotlib torch torchvision\n
+pip3 install ipykernel
+python -m ipykernel install --user --name=venv
