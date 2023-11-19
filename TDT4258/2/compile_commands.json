@@ -1,0 +1,19 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Wall",
+      "-Wpedantic",
+      "-Wextra",
+      "-Wshadow",
+      "-std=gnu11",
+      "-o",
+      "cache_sim",
+      "cache_sim.c"
+    ],
+    "directory": "/home/nic/School/maskinnær/labs/2",
+    "file": "/home/nic/School/maskinnær/labs/2/cache_sim.c",
+    "output": "/home/nic/School/maskinnær/labs/2/cache_sim"
+  }
+]
