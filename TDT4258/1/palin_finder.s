@@ -21,14 +21,17 @@ check_if_palindrome:
 	add r2, r1, r0          // address of the last character (right pointer)
 	
 	// correctly sets r0
-	bl check_if_palindrome_loop
+	bl check_if_palindrome_loop_stub
 	
 	pop {pc}	        // restore the link register and return
 
 // stores true in r0 if palindrome else false
-check_if_palindrome_loop:
+check_if_palindrome_loop_stub:
 	push {lr}               // save the link register on the stack
-	
+	// save registers and pop when returning
+	push {r4}
+	push {r5}
+check_if_palindrome_loop:
 	// ignore all whitespace
 	// r4 is value at L
 	// r5 is value at R
@@ -52,8 +55,8 @@ cont_r:
 	cmp r3, #0
 	bgt .+12	        // if diff > 0 then continue as normal
 	mov r0, #1 		// store true
-	pop {pc}		// restore the link register and return
-		
+	b check_if_palindrome_return
+	
 	mov r0, r4		// put byte at L into r0
 	bl to_lower
 	mov r4, r0		// store "lowered" byte at L in r4
@@ -64,14 +67,18 @@ cont_r:
 	cmp r4, r5
 	beq .+12		// if bytes not equal then return false
 	mov r0, #0 	        // store false
-	pop {pc}	        // restore the link register and return
+	b check_if_palindrome_return
 	
 	add r1, r1, #1          // l++
 	sub r2, r2, #1          // r--
 	sub r3, r2, r1	        // r - l
 	cmp r3, #0		// r - l with 0
-	bgt check_if_palindrome_loop+4 // while r - l > 0, continue
+	bgt check_if_palindrome_loop
 	mov r0, #1		// store true
+	
+check_if_palindrome_return:
+	pop {r5}
+	pop {r4}
 	pop {pc}		// restore the link register and return
 	
 
