@@ -18,6 +18,7 @@
 | IDATT2105 | Full-stack application development                    | A       |
 | IDATT2106 | System development 2 with flexible project            | B       |
 | IFYTT1001 | Physics                                               | B       |
+| TDT4258   | Low-Level Programming                                 | A       |
 
 
 \* due to covid, some courses were changed from graded to passed/not passed.
