@@ -19,6 +19,8 @@
 | IDATT2106 | System development 2 with flexible project            | B       |
 | IFYTT1001 | Physics                                               | B       |
 | TDT4258   | Low-Level Programming                                 | A       |
+| INFT2503  | C++ for programmers                                   | passed  |
+| IDATT2502 | Applied machine learning with project                 | A       |
 
 
 \* due to covid, some courses were changed from graded to passed/not passed.
