@@ -1,0 +1,73 @@
+# Problem Set 2
+Nicolai H. Brand
+
+## 1
+### 1.1
+Provided grammar:
+```
+S → i C B E n
+C → c
+B → m L | o X
+L → L ; X | X
+X → x | y
+E → e B | ϵ
+```
+
+The `L` rule is left recursive. It can be rewritten as:
+```
+L → X L'
+L'→ ; X L' | ϵ
+```
+
+Which results in the modified grammar:
+```
+S → i C B E n
+C → c
+B → m L | o X
+L → X L'
+L'→ ; X L' | ϵ
+X → x | y
+E → e B | ϵ
+```
+
+### 1.2
+FIRST and FOLLOW sets for the grammar. To express nullability, I have decided to use the same notation as the Dragon Book, being the addition of ϵ in the FIRST set.
+
+```
+FIRST(S)    = { i }
+FOLLOW(S)   = { $ }
+
+FIRST(C)    = { c }
+FOLLOW(C)   = FIRST(B) = { m, o }
+
+FIRST(B)    = { m, o }
+FOLLOW(B)   = FIRST(E) ∩ FOLLOW(E) ∩ n (since E can be ϵ)
+            = { e, n }
+
+FIRST(L)    = { x, y }
+FOLLOW(L)   = FOLLOW(B) = { e, n }
+
+FIRST(L')   = { ;, ϵ }
+FOLLOW(L')  = FOLLOW(L) = { e, n }
+
+FIRST(X)    = { x, y }
+FOLLOW(X)   = FIRST(L') ∩ FOLLOW(B) = { ;, e, n } 
+
+FIRST(E)    = { e, ϵ }
+FOLLOW(E)   = { n }
+```
+
+
+### 1.3
+LL(1) parsing table for the grammar:
+
+|    | i | n | c | m | o | ; | x | y | e
+| -  | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| S  | S → i C B E n |  |  |  |  |  |   |   |   |
+| C  |   |   | C → c |   |   |   |   |   |   |
+| B  |   |   |   | B → m L | B → o X |   |   |   |   |
+| L  |   |   |   |   |   |   | L → X L' | L → X L' |   |
+| L' |   | L'→ ϵ |   |   |   | L'→ ; X L' |   |   | L'→ ϵ |
+| X  |   |   |   |   |   |   | X → x | X → y |   |
+| E  |   | E → ϵ |   |   |   |   |   |   | E → e B |
+
