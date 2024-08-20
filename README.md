@@ -1,12 +1,12 @@
 ### University courses I have taken at the Norwegian University of Science and Technology
 
 
-### completed courses
+### Courses for my Bachelor's degree in "Computer Science - Engineering"
 | course code | course name                                         | grade   |
 |-----------|-------------------------------------------------------|---------|
 | INGT1001  | Introduction to the engineering profession            | passed  |
 | IDATT1001 | Programming 1                                         | A       |
-| IMAT1001  | Mathematical methods 1                                | passed* |
+| IMAT1001  | Mathematical methods 1                                | passed  |
 | IDATT1002 | Software Engineering                                  | A       |
 | IDATT2001 | Programming 2                                         | A       |
 | IMAT2021  | Mathematical methods 2 for Computer Science engineers | A       |
@@ -18,9 +18,15 @@
 | IDATT2105 | Full-stack application development                    | A       |
 | IDATT2106 | System development 2 with flexible project            | B       |
 | IFYTT1001 | Physics                                               | B       |
-| TDT4258   | Low-Level Programming                                 | A       |
 | INFT2503  | C++ for programmers                                   | passed  |
+| IMAT2150  | Mathematical methods 3 for computer engineers         | C       |
 | IDATT2502 | Applied machine learning with project                 | A       |
+| IDATT2501 | Specialization Project                                | A       |
+| IDATT2900 | Bachelor Thesis                                       | A       |
 
 
-\* due to covid, some courses were changed from graded to passed/not passed.
+### Extra courses I have taken for fun
+| course code | course name                                         | grade   |
+|-----------|-------------------------------------------------------|---------|
+| TDT4258   | Low-Level Programming                                 | A       |
+| TDT4205   | Compiler Construction                                 | C       |
