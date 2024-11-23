@@ -22,7 +22,16 @@
 | IMAT2150  | Mathematical methods 3 for computer engineers         | C       |
 | IDATT2502 | Applied machine learning with project                 | A       |
 | IDATT2501 | Specialization Project                                | A       |
+| INGT2300  | Engineering Systems Thinking                          | A       |
 | IDATT2900 | Bachelor Thesis                                       | A       |
+
+### Courses for my Master of Science degree in Computer Science, specializing in Algorithms, HPC and Computer Architecture
+| course code | course name                                         | grade   |
+|-----------|-------------------------------------------------------|---------|
+| TDT4156   | Programming Languages                                 | ongoing  |
+| TDT4195   | Visual Computing Fundamentals                         | ongoing  |
+| TDT4200   | Parallel Computing                                    | ongoing  |
+| TDT4255   | Computer Design                                       | ongoing  |
 
 
 ### Extra courses I have taken for fun

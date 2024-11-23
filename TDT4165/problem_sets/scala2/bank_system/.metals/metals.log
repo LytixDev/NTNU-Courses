@@ -1,0 +1,22 @@
+2024.10.10 08:15:18 INFO  Started: Metals version 1.3.5 in folders '/home/nic/Downloads/scala_project_2024/bank_system' for client Visual Studio Code 1.90.2.[0m
+SLF4J(W): Class path contains multiple SLF4J providers.
+SLF4J(W): Found provider [scribe.slf4j.ScribeServiceProvider@7a0afdca]
+SLF4J(W): Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@719cb38d]
+SLF4J(W): See https://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J(I): Actual provider is of type [scribe.slf4j.ScribeServiceProvider@7a0afdca]
+2024.10.10 08:15:18 WARN  Flyway upgrade recommended: H2 2.3.230 is newer than this version of Flyway and support has not been tested. The latest supported version of H2 is 2.2.220.[0m
+2024.10.10 08:17:23 INFO  Shutting down server[0m
+2024.10.10 08:17:23 INFO  shutting down Metals[0m
+2024.10.10 08:17:23 INFO  Exiting server[0m
+2024.10.10 08:17:27 INFO  Started: Metals version 1.3.5 in folders '/home/nic/Downloads/scala_project_2024/bank_system' for client Visual Studio Code 1.90.2.[0m
+Oct 10, 2024 8:17:27 AM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+SLF4J(W): Class path contains multiple SLF4J providers.
+SLF4J(W): Found provider [scribe.slf4j.ScribeServiceProvider@2f853728]
+SLF4J(W): Found provider [ch.qos.logback.classic.spi.LogbackServiceProvider@6323fbc8]
+SLF4J(W): See https://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J(I): Actual provider is of type [scribe.slf4j.ScribeServiceProvider@2f853728]
+2024.10.10 08:17:27 WARN  Flyway upgrade recommended: H2 2.3.230 is newer than this version of Flyway and support has not been tested. The latest supported version of H2 is 2.2.220.[0m
+2024.10.10 08:17:57 INFO  Shutting down server[0m
+2024.10.10 08:17:57 INFO  shutting down Metals[0m
+2024.10.10 08:17:57 INFO  Exiting server[0m

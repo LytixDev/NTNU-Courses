@@ -1,0 +1,4 @@
+#!/usr/local/bin/slash
+loop file in (find -name "*.cu" -o -name "*.h") {
+    clang-format --verbose -i -style=file $file
+}
