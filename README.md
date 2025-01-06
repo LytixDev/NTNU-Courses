@@ -28,14 +28,21 @@
 ### Courses for my Master of Science degree in Computer Science, specializing in Algorithms, HPC and Computer Architecture
 | course code | course name                                         | grade   |
 |-----------|-------------------------------------------------------|---------|
-| TDT4156   | Programming Languages                                 | ongoing  |
-| TDT4195   | Visual Computing Fundamentals                         | ongoing  |
-| TDT4200   | Parallel Computing                                    | ongoing  |
+| TDT4156   | Programming Languages                                 | A       |
+| TDT4200   | Parallel Computing                                    | A       |
+| TDT4258   | Low-Level Programming                                 | A       |
 | TDT4255   | Computer Design                                       | ongoing  |
+| TDT4260   | Computer Architecture                                 | ongoing  |
+| TDT4125   | Algorithm Construction                                | ongoing  |
+| TPG4850   | Experts in Teamwork - VR Village                      | ongoing  |
+| TMA4105   | Mathematics 2 - Multivariable calculus and vector analysis | ongoing  |
+
 
 
 ### Extra courses I have taken for fun
 | course code | course name                                         | grade   |
 |-----------|-------------------------------------------------------|---------|
-| TDT4258   | Low-Level Programming                                 | A       |
 | TDT4205   | Compiler Construction                                 | C       |
+| TDT4195   | Visual Computing Fundamentals                         | ongoing  |
+| TDT4230   | Graphics and Visualization                            | ongoing  |
+| TTK4145   | Real-time Programming                                 | ongoing  |
