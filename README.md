@@ -28,7 +28,7 @@
 ### Courses for my Master of Science degree in Computer Science, specializing in Algorithms, HPC and Computer Architecture
 | course code | course name                                         | grade   |
 |-----------|-------------------------------------------------------|---------|
-| TDT4156   | Programming Languages                                 | A       |
+| TDT4195   | Visual Computing Fundamentals                         | A       |
 | TDT4200   | Parallel Computing                                    | A       |
 | TDT4258   | Low-Level Programming                                 | A       |
 | TDT4255   | Computer Design                                       | A       |
@@ -43,4 +43,4 @@
 | course code | course name                                         | grade   |
 |-----------|-------------------------------------------------------|---------|
 | TDT4205   | Compiler Construction                                 | C       |
-| TDT4195   | Visual Computing Fundamentals                         | ongoing  |
+| TDT4156   | Programming Languages                                 | A       |
